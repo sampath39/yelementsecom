@@ -1,0 +1,585 @@
+<<<<<<< HEAD
+Build a complete full-stack, production-ready e-commerce web application similar to Dmart (https://www.dmart.in/) with the brand name "Yelements".
+
+IMPORTANT:
+Use Lovable Cloud for backend functionality including database, authentication, and server-side APIs. The system must be fully functional end-to-end.
+
+---
+
+## TECH STACK
+
+Frontend:
+
+* Next.js (App Router)
+* React
+* Tailwind CSS
+
+Backend:
+
+* Lovable Cloud (for DB, Auth, APIs)
+
+---
+
+## FEATURE REQUIREMENTS
+
+1. FRONTEND UI
+
+* Design similar to Dmart:
+
+  * Green header
+  * White background
+  * Yellow highlights
+* Clean grid layout
+* Fully responsive
+
+Pages to implement:
+
+* Home Page (banners, categories, offers)
+* Category & Subcategory Pages
+* Product Listing Page (filters + search)
+* Product Detail Page
+* Cart Page
+* Checkout Page
+* Login Page
+* Register Page
+* User Dashboard
+
+---
+
+2. AUTHENTICATION
+
+---
+
+Implement real authentication using Lovable Cloud:
+
+Register:
+
+* Name
+* Email (validate format)
+* Password (min 6 chars)
+* Confirm Password (must match)
+
+Login:
+
+* Email + Password
+
+Roles:
+
+* Admin
+* User
+* Vendor
+
+Protected routes:
+
+* Dashboard
+* Admin panel
+* Vendor panel
+
+---
+
+3. DATABASE STRUCTURE
+
+---
+
+Users:
+
+* id
+* name
+* email
+* password (hashed)
+* role (admin/user/vendor)
+* address
+
+Products:
+
+* id
+* name
+* price
+* description
+* category
+* subcategory
+* images
+* stock
+* vendorId
+
+Orders:
+
+* id
+* userId
+* products
+* total
+* status
+* createdAt
+
+Categories:
+
+* name
+* subcategories (array)
+
+Vendors:
+
+* id
+* name
+* email
+* products
+
+---
+
+4. CATEGORIES & SUBCATEGORIES
+
+---
+
+Stationery:
+
+* Pens
+* Notebooks
+* Files & Folders
+* Office Supplies
+
+Medical:
+
+* Medicines
+* First Aid
+* Health Devices
+
+Laboratory:
+
+* Glassware
+* Lab Instruments
+* Chemicals
+
+Surgical:
+
+* Surgical Tools
+* Disposable Items
+* Sterilization Products
+
+Canteen:
+
+* Snacks
+* Beverages
+* Groceries
+
+Housekeeping:
+
+* Cleaning Supplies
+* Laundry
+* Waste Management
+
+Miscellaneous:
+
+* General Items
+* Others
+
+---
+
+5. ADMIN DASHBOARD
+
+---
+
+* Admin login
+* Dashboard stats (users, products, orders)
+* Add Product:
+
+  * Name, price, description
+  * Category & Subcategory dropdown
+  * Image upload
+  * Stock input
+* Edit/Delete products
+* Manage categories
+* Manage users
+* Manage orders
+
+---
+
+6. VENDOR PANEL
+
+---
+
+* Vendor registration & login
+* Add products under assigned categories
+* Update stock
+* View orders for their products
+
+---
+
+7. PRODUCT SYSTEM
+
+---
+
+* Dynamic product addition
+* Search functionality
+* Filters:
+
+  * Category
+  * Subcategory
+  * Price range
+* Pagination
+
+---
+
+8. CART & CHECKOUT
+
+---
+
+* Add to cart
+* Update quantity
+* Remove items
+* Checkout flow
+* Store orders in database
+
+---
+
+9. EXTRA FEATURES
+
+---
+
+* Wishlist
+* Ratings & Reviews
+* Discount banners
+* Optional Razorpay payment integration
+
+---
+
+10. DESIGN
+
+---
+
+* Match Dmart UI/UX
+* Replace branding with "Yelements"
+* Minimal and professional design
+
+---
+
+11. PROJECT STRUCTURE
+
+---
+
+* Clean modular architecture
+* Separate frontend & backend logic
+* Use environment variables
+
+---
+
+12. FINAL STEP
+
+---
+
+Before implementing backend, ask:
+
+"To enable real authentication, database, admin panel, and vendor system, I'll need to enable Lovable Cloud — this provides database, auth, and server-side functions. Do you want me to proceed?"
+
+After confirmation:
+
+* Enable Lovable Cloud
+* Implement all backend features
+* Ensure full working application
+
+---
+
+13. DELIVERABLE
+
+---
+
+* Production-ready application
+* Fully working authentication
+* Admin dashboard
+* Vendor system
+* Database integration
+* Sample data
+* Setup instructions
+
+Ensure the system behaves like a real-world scalable e-commerce platform.
+=======
+Build a complete full-stack, production-ready e-commerce web application similar to Dmart (https://www.dmart.in/) with the brand name "Yelements".
+
+IMPORTANT:
+Use Lovable Cloud for backend functionality including database, authentication, and server-side APIs. The system must be fully functional end-to-end.
+
+---
+
+## TECH STACK
+
+Frontend:
+
+* Next.js (App Router)
+* React
+* Tailwind CSS
+
+Backend:
+
+* Lovable Cloud (for DB, Auth, APIs)
+
+---
+
+## FEATURE REQUIREMENTS
+
+1. FRONTEND UI
+
+* Design similar to Dmart:
+
+  * Green header
+  * White background
+  * Yellow highlights
+* Clean grid layout
+* Fully responsive
+
+Pages to implement:
+
+* Home Page (banners, categories, offers)
+* Category & Subcategory Pages
+* Product Listing Page (filters + search)
+* Product Detail Page
+* Cart Page
+* Checkout Page
+* Login Page
+* Register Page
+* User Dashboard
+
+---
+
+2. AUTHENTICATION
+
+---
+
+Implement real authentication using Lovable Cloud:
+
+Register:
+
+* Name
+* Email (validate format)
+* Password (min 6 chars)
+* Confirm Password (must match)
+
+Login:
+
+* Email + Password
+
+Roles:
+
+* Admin
+* User
+* Vendor
+
+Protected routes:
+
+* Dashboard
+* Admin panel
+* Vendor panel
+
+---
+
+3. DATABASE STRUCTURE
+
+---
+
+Users:
+
+* id
+* name
+* email
+* password (hashed)
+* role (admin/user/vendor)
+* address
+
+Products:
+
+* id
+* name
+* price
+* description
+* category
+* subcategory
+* images
+* stock
+* vendorId
+
+Orders:
+
+* id
+* userId
+* products
+* total
+* status
+* createdAt
+
+Categories:
+
+* name
+* subcategories (array)
+
+Vendors:
+
+* id
+* name
+* email
+* products
+
+---
+
+4. CATEGORIES & SUBCATEGORIES
+
+---
+
+Stationery:
+
+* Pens
+* Notebooks
+* Files & Folders
+* Office Supplies
+
+Medical:
+
+* Medicines
+* First Aid
+* Health Devices
+
+Laboratory:
+
+* Glassware
+* Lab Instruments
+* Chemicals
+
+Surgical:
+
+* Surgical Tools
+* Disposable Items
+* Sterilization Products
+
+Canteen:
+
+* Snacks
+* Beverages
+* Groceries
+
+Housekeeping:
+
+* Cleaning Supplies
+* Laundry
+* Waste Management
+
+Miscellaneous:
+
+* General Items
+* Others
+
+---
+
+5. ADMIN DASHBOARD
+
+---
+
+* Admin login
+* Dashboard stats (users, products, orders)
+* Add Product:
+
+  * Name, price, description
+  * Category & Subcategory dropdown
+  * Image upload
+  * Stock input
+* Edit/Delete products
+* Manage categories
+* Manage users
+* Manage orders
+
+---
+
+6. VENDOR PANEL
+
+---
+
+* Vendor registration & login
+* Add products under assigned categories
+* Update stock
+* View orders for their products
+
+---
+
+7. PRODUCT SYSTEM
+
+---
+
+* Dynamic product addition
+* Search functionality
+* Filters:
+
+  * Category
+  * Subcategory
+  * Price range
+* Pagination
+
+---
+
+8. CART & CHECKOUT
+
+---
+
+* Add to cart
+* Update quantity
+* Remove items
+* Checkout flow
+* Store orders in database
+
+---
+
+9. EXTRA FEATURES
+
+---
+
+* Wishlist
+* Ratings & Reviews
+* Discount banners
+* Optional Razorpay payment integration
+
+---
+
+10. DESIGN
+
+---
+
+* Match Dmart UI/UX
+* Replace branding with "Yelements"
+* Minimal and professional design
+
+---
+
+11. PROJECT STRUCTURE
+
+---
+
+* Clean modular architecture
+* Separate frontend & backend logic
+* Use environment variables
+
+---
+
+12. FINAL STEP
+
+---
+
+Before implementing backend, ask:
+
+"To enable real authentication, database, admin panel, and vendor system, I'll need to enable Lovable Cloud — this provides database, auth, and server-side functions. Do you want me to proceed?"
+
+After confirmation:
+
+* Enable Lovable Cloud
+* Implement all backend features
+* Ensure full working application
+
+---
+
+13. DELIVERABLE
+
+---
+
+* Production-ready application
+* Fully working authentication
+* Admin dashboard
+* Vendor system
+* Database integration
+* Sample data
+* Setup instructions
+
+Ensure the system behaves like a real-world scalable e-commerce platform.
+>>>>>>> cf99d1414c8e837b04a773d6a0e41eb5745afea0
