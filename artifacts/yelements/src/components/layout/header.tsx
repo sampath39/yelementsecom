@@ -192,11 +192,11 @@ export function Header() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="hidden sm:flex items-center gap-2">
-                <Button variant="ghost" asChild className="text-foreground hover:bg-primary/20 font-semibold">
+              <div className="hidden sm:flex items-center gap-3">
+                <Button variant="outline" asChild className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white rounded-full font-bold shadow-sm backdrop-blur-md px-6 transition-all">
                   <Link href="/login">Login</Link>
                 </Button>
-                <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg font-semibold">
+                <Button asChild className="bg-teal-900 text-white hover:bg-teal-950 shadow-lg rounded-full font-bold px-6 transition-all border border-teal-800">
                   <Link href="/register">Register</Link>
                 </Button>
               </div>
