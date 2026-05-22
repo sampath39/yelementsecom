@@ -12,11 +12,11 @@ import { useState } from "react";
 const categoryFallbacks: Record<string, string> = {
   Stationery: "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?q=80&w=400&auto=format&fit=crop",
   Medical: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?q=80&w=400&auto=format&fit=crop",
-  Laboratory: "https://images.unsplash.com/photo-1581093588401-f3c22d66c2c9?q=80&w=400&auto=format&fit=crop",
-  Surgical: "https://images.unsplash.com/photo-1579684389782-64d84b5e901d?q=80&w=400&auto=format&fit=crop",
+  Laboratory: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=400&auto=format&fit=crop",
+  Surgical: "https://images.unsplash.com/photo-1584362917165-526a968579e8?q=80&w=400&auto=format&fit=crop",
   Canteen: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=400&auto=format&fit=crop",
   Housekeeping: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=400&auto=format&fit=crop",
-  Miscellaneous: "https://images.unsplash.com/photo-1566576912321-d58edd7a2858?q=80&w=400&auto=format&fit=crop",
+  Miscellaneous: "https://images.unsplash.com/photo-1603398938378-e54eab446dde?q=80&w=400&auto=format&fit=crop",
 };
 
 export function ProductCard({ product }: { product: SafeProduct }) {

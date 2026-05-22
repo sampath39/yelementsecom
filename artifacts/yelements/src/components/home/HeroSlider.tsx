@@ -31,7 +31,7 @@ const slides = [
     subtitle: "Premium Institutional Supplies.",
     highlight: "Supplies.",
     description: "Explore the latest arrivals in our catalog of high precision labware and surgical supplies.",
-    image: "https://images.unsplash.com/photo-1581093588401-f3c22d66c2c9?q=80&w=2070&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070&auto=format&fit=crop",
     bgColor: "bg-green-50",
     buttonText: "EXPLORE CATALOG",
     link: "/products?sort=new"

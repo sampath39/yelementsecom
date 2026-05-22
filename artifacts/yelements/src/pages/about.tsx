@@ -90,7 +90,7 @@ export default function About() {
 
           <div className="relative rounded-3xl overflow-hidden shadow-xl border aspect-video md:aspect-square">
             <img 
-              src="https://images.unsplash.com/photo-1579684389782-64d84b5e901d?q=80&w=800&auto=format&fit=crop" 
+              src="https://images.unsplash.com/photo-1584362917165-526a968579e8?q=80&w=800&auto=format&fit=crop" 
               alt="Scientific research supplies distribution" 
               className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
             />
