@@ -8,15 +8,13 @@ export function FloatingCategories() {
   });
 
   const categoryIcons: Record<string, string> = {
-    Fashion: "👗",
-    Electronics: "📱",
-    Grocery: "🛒",
-    Mobiles: "📱",
-    Shoes: "👟",
     Stationery: "✏️",
     Medical: "🏥",
     Laboratory: "🔬",
     Surgical: "🩺",
+    Canteen: "🍽️",
+    Housekeeping: "🧹",
+    Miscellaneous: "📦"
   };
 
   return (
