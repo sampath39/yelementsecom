@@ -47,15 +47,15 @@ export function AppLayout({ children }: { children: ReactNode }) {
         <Header />
         
         {/* ⚡ SCROLLING TEXT TICKER FOR ANNOUNCEMENTS & TECHNICS ⚡ */}
-        <div className="bg-primary/20 text-primary-foreground py-3 overflow-hidden relative border-b border-primary/30 shadow-sm z-20 flex items-center min-h-[40px] glass">
-          <div className="flex items-center animate-[marquee_35s_linear_infinite] whitespace-nowrap gap-12 font-extrabold text-xs uppercase tracking-wider min-w-full leading-none text-foreground">
+        <div className="bg-[#d4f84a] py-3 overflow-hidden relative border-b border-lime-300 shadow-sm z-20 flex items-center min-h-[40px]">
+          <div className="flex items-center animate-[marquee_35s_linear_infinite] whitespace-nowrap gap-12 font-extrabold text-xs uppercase tracking-wider min-w-full leading-none text-slate-900">
             <span>🎉 Welcome to Yelements Store! Founder: Dr. Suresh Kumar Yele</span>
-            <span className="text-primary">🔥 FIRST BULK ORDER DELIVERY FREE! USE CODE "FREEBULK"</span>
+            <span className="text-emerald-700">🔥 FIRST BULK ORDER DELIVERY FREE! USE CODE "FREEBULK"</span>
             <span>🔬 High Precision Labware & Surgical Supplies Vetted by Experts</span>
             <span>📞 Contact Dr. Suresh Kumar Yele: 9290920349 / skyoptixinternational@gmail.com</span>
             <span>🏢 Office: Vijayawada, Andhra Pradesh, India</span>
             <span>🎉 Welcome to Yelements Store! Founder: Dr. Suresh Kumar Yele</span>
-            <span className="text-primary">🔥 FIRST BULK ORDER DELIVERY FREE! USE CODE "FREEBULK"</span>
+            <span className="text-emerald-700">🔥 FIRST BULK ORDER DELIVERY FREE! USE CODE "FREEBULK"</span>
             <span>🔬 High Precision Labware & Surgical Supplies Vetted by Experts</span>
             <span>📞 Contact Dr. Suresh Kumar Yele: 9290920349 / skyoptixinternational@gmail.com</span>
             <span>🏢 Office: Vijayawada, Andhra Pradesh, India</span>

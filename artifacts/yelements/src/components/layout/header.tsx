@@ -55,7 +55,7 @@ export function Header() {
   const trendingSearches = ["Wireless Earbuds", "Smart Watches", "Sneakers", "Gaming Mouse"];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b glass text-foreground transition-all duration-300">
+    <header className="sticky top-0 z-50 w-full border-b border-emerald-400 bg-emerald-500 text-white transition-all duration-300 shadow-md">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Mobile Menu & Logo */}
@@ -93,8 +93,8 @@ export function Header() {
 
             <Link href="/" className="flex items-center gap-2 group">
               <span className="text-2xl font-black tracking-tight flex items-center">
-                <span className="text-primary group-hover:drop-shadow-neon transition-all duration-300">ye</span>
-                <span className="text-foreground">lements</span>
+                <span className="text-emerald-100 group-hover:drop-shadow-neon transition-all duration-300">ye</span>
+                <span className="text-white">lements</span>
               </span>
             </Link>
           </div>
@@ -154,8 +154,8 @@ export function Header() {
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="text-foreground hover:bg-primary/20 hidden sm:flex items-center gap-2 font-semibold">
-                    <User className="h-5 w-5 text-primary" />
+                  <Button variant="ghost" size="sm" className="text-white hover:bg-white/20 hidden sm:flex items-center gap-2 font-semibold">
+                    <User className="h-5 w-5 text-emerald-100" />
                     <span className="truncate max-w-[100px]">{user.name}</span>
                   </Button>
                 </DropdownMenuTrigger>
@@ -202,18 +202,18 @@ export function Header() {
             )}
 
             {user && (
-              <Button variant="ghost" size="icon" asChild className="text-foreground hover:bg-primary/20" title="My Orders">
+              <Button variant="ghost" size="icon" asChild className="text-white hover:bg-white/20" title="My Orders">
                 <Link href="/dashboard">
                   <Package className="h-5 w-5" />
                 </Link>
               </Button>
             )}
 
-            <Button variant="ghost" size="icon" asChild className="text-foreground hover:bg-primary/20 relative group">
+            <Button variant="ghost" size="icon" asChild className="text-white hover:bg-white/20 relative group">
               <Link href="/cart">
                 <ShoppingCart className="h-5 w-5 transition-transform group-hover:scale-110" />
                 {cart && cart.itemCount > 0 && (
-                  <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-[10px] rounded-full border-2 border-background animate-in zoom-in">
+                  <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-[10px] rounded-full border-2 border-emerald-500 animate-in zoom-in">
                     {cart.itemCount}
                   </Badge>
                 )}
@@ -240,16 +240,16 @@ export function Header() {
       </div>
 
       {/* Desktop Top Navigation (Replaces Sidebar) */}
-      <div className="hidden lg:block border-t border-primary/10 bg-background/30 backdrop-blur-md">
+      <div className="hidden lg:block border-t border-emerald-400 bg-emerald-600/50 backdrop-blur-md">
         <nav className="container mx-auto px-4 lg:px-8 flex items-center gap-8 h-10">
-          <Link href="/" className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors">Home</Link>
-          <Link href="/products" className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors">Products</Link>
-          <Link href="/categories" className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors">Categories</Link>
-          <Link href="/wishlist" className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors flex items-center gap-1.5 group">
-            <Heart className="w-3.5 h-3.5 text-rose-500 fill-transparent group-hover:fill-rose-500 transition-all" /> Wishlist
+          <Link href="/" className="text-sm font-semibold text-emerald-50 hover:text-white transition-colors">Home</Link>
+          <Link href="/products" className="text-sm font-semibold text-emerald-50 hover:text-white transition-colors">Products</Link>
+          <Link href="/categories" className="text-sm font-semibold text-emerald-50 hover:text-white transition-colors">Categories</Link>
+          <Link href="/wishlist" className="text-sm font-semibold text-emerald-50 hover:text-white transition-colors flex items-center gap-1.5 group">
+            <Heart className="w-3.5 h-3.5 text-rose-300 fill-transparent group-hover:fill-rose-300 transition-all" /> Wishlist
           </Link>
-          {user && <Link href="/orders" className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors">Orders</Link>}
-          <Link href="/about" className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors">About</Link>
+          {user && <Link href="/orders" className="text-sm font-semibold text-emerald-50 hover:text-white transition-colors">Orders</Link>}
+          <Link href="/about" className="text-sm font-semibold text-emerald-50 hover:text-white transition-colors">About</Link>
         </nav>
       </div>
     </header>
