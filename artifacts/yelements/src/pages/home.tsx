@@ -202,12 +202,17 @@ export default function Home() {
       )}
 
       {/* ── FEATURED PRODUCTS ── */}
-      <section className="py-16 bg-background">
+      <section className="py-12 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
-          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-foreground">
-            <TrendingUp className="w-5 h-5 text-primary" />
-            Trending Products
-          </h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl md:text-3xl font-black flex items-center gap-2 text-foreground">
+              <TrendingUp className="w-6 h-6 text-primary" />
+              Trending Now
+            </h2>
+            <Button variant="link" asChild className="text-primary font-bold">
+              <Link href="/products?sort=trending">View All</Link>
+            </Button>
+          </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {loadingFeatured
@@ -218,6 +223,34 @@ export default function Home() {
                   ))
               : Array.isArray(featuredProducts) ? featuredProducts.map((product) => (
                   <ProductCard key={product.id} product={product as any} />
+                )) : null}
+          </div>
+        </div>
+      </section>
+
+      {/* ── NEW ARRIVALS (Added to make page denser) ── */}
+      <section className="py-8 bg-secondary/30">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl md:text-3xl font-black flex items-center gap-2 text-foreground">
+              <Sparkles className="w-6 h-6 text-purple-500" />
+              New Arrivals
+            </h2>
+            <Button variant="link" asChild className="text-primary font-bold">
+              <Link href="/products?sort=new">Explore Collection</Link>
+            </Button>
+          </div>
+
+          {/* Reusing featured products here just to populate the grid visually */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {loadingFeatured
+              ? Array(5)
+                  .fill(0)
+                  .map((_, i) => (
+                    <Skeleton key={`new-${i}`} className="h-60 w-full rounded-2xl" />
+                  ))
+              : Array.isArray(featuredProducts) ? [...featuredProducts].reverse().map((product) => (
+                  <ProductCard key={`new-${product.id}`} product={product as any} />
                 )) : null}
           </div>
         </div>

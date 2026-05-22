@@ -30,6 +30,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export function Header() {
   const { user, logout } = useAuth();
@@ -112,10 +113,10 @@ export function Header() {
                 onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
               />
               <div className="absolute right-2 flex items-center gap-1">
-                <Button type="button" variant="ghost" size="icon" className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary">
+                <Button type="button" onClick={() => toast.success("Voice Search Activated", { description: "Listening for your query..." })} variant="ghost" size="icon" className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary">
                   <Mic className="h-4 w-4" />
                 </Button>
-                <Button type="button" variant="ghost" size="icon" className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary">
+                <Button type="button" onClick={() => toast.success("Camera Search Activated", { description: "Opening camera for visual search..." })} variant="ghost" size="icon" className="h-8 w-8 rounded-full text-muted-foreground hover:text-primary">
                   <Camera className="h-4 w-4" />
                 </Button>
                 <Button type="submit" size="icon" className="h-8 w-8 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md">

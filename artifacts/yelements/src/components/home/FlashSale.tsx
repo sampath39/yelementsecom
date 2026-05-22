@@ -119,7 +119,7 @@ export function FlashSale() {
                   <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                 </div>
 
-                <Link href={`/products/${product.id}`} className="block">
+                <Link href="/products" className="block">
                   <h3 className="font-bold text-foreground truncate hover:text-primary transition-colors">{product.name}</h3>
                 </Link>
 

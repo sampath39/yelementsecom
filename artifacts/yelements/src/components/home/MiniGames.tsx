@@ -6,20 +6,36 @@ export function MiniGames() {
   const [spinning, setSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
 
+  const segments = ["10% OFF", "Try Again", "20% OFF", "5% OFF", "Free Ship", "50% OFF"];
+  const segmentAngle = 360 / segments.length;
+
   const handleSpin = () => {
     if (spinning) return;
     setSpinning(true);
     
-    // Random rotation between 5 to 10 full circles + random slice
-    const newRotation = rotation + (Math.floor(Math.random() * 5) + 5) * 360 + Math.floor(Math.random() * 360);
+    const winningIndex = Math.floor(Math.random() * segments.length);
+    // target angle to make the winning index stop at the top (which is 0 deg for the first segment)
+    // Add a slight random offset so it doesn't always stop perfectly dead center
+    const randomOffset = Math.floor(Math.random() * (segmentAngle * 0.8)) - (segmentAngle * 0.4);
+    const targetAngle = 360 - (winningIndex * segmentAngle) + randomOffset;
+    
+    // Calculate new rotation to include 5 full spins from current position
+    const currentNormalized = rotation % 360;
+    const addedRotation = 5 * 360 + targetAngle - currentNormalized;
+    const newRotation = rotation + addedRotation;
+
     setRotation(newRotation);
 
     setTimeout(() => {
       setSpinning(false);
-      toast.success("Congratulations! 🎉", {
-        description: "You won a 10% Discount Coupon! (Added to your wallet)"
-      });
-    }, 4000); // match transition duration
+      if (segments[winningIndex] === "Try Again") {
+        toast.error("Oh no! 😢", { description: "Better luck next time!" });
+      } else {
+        toast.success("Congratulations! 🎉", {
+          description: `You won: ${segments[winningIndex]}! (Added to your wallet)`
+        });
+      }
+    }, 4000);
   };
 
   return (
@@ -52,19 +68,30 @@ export function MiniGames() {
               </svg>
             </div>
             <div 
-              className="w-full h-full rounded-full border-4 border-white/30 shadow-[0_0_30px_rgba(0,0,0,0.3)] bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 flex items-center justify-center overflow-hidden"
+              className="w-full h-full rounded-full border-4 border-white/30 shadow-[0_0_30px_rgba(0,0,0,0.3)] bg-indigo-900 flex items-center justify-center overflow-hidden"
               style={{ 
                 transform: `rotate(${rotation}deg)`,
                 transition: spinning ? 'transform 4s cubic-bezier(0.1, 0.7, 0.1, 1)' : 'none'
               }}
             >
-              {/* Wheel Slices - Abstract rep */}
-              <div className="absolute top-0 left-1/2 w-0.5 h-full bg-white/20" />
-              <div className="absolute top-1/2 left-0 w-full h-0.5 bg-white/20" />
-              <div className="absolute top-0 left-1/2 w-0.5 h-full bg-white/20 rotate-45" />
-              <div className="absolute top-0 left-1/2 w-0.5 h-full bg-white/20 -rotate-45" />
+              {segments.map((segment, i) => {
+                const angle = i * segmentAngle;
+                return (
+                  <div
+                    key={i}
+                    className="absolute top-0 left-1/2 w-0 h-1/2 origin-bottom border-l-[1px] border-white/20 flex flex-col justify-start items-center pt-2"
+                    style={{ transform: `rotate(${angle}deg) translateX(-50%)`, width: '100%', clipPath: 'polygon(50% 100%, 0 0, 100% 0)' }}
+                  >
+                    {/* The slice background */}
+                    <div className={`absolute top-0 w-[120px] h-[100px] -ml-[60px] ${i % 2 === 0 ? 'bg-pink-500' : 'bg-purple-500'}`} style={{ clipPath: 'polygon(50% 100%, 0 0, 100% 0)' }} />
+                    <span className="text-[10px] font-black uppercase whitespace-nowrap -rotate-90 origin-center text-white z-10 mt-6 -ml-4" style={{ writingMode: 'vertical-rl' }}>
+                      {segment}
+                    </span>
+                  </div>
+                );
+              })}
               
-              <div className="w-8 h-8 bg-white rounded-full z-10 flex items-center justify-center shadow-inner">
+              <div className="w-8 h-8 bg-white rounded-full z-10 flex items-center justify-center shadow-inner relative">
                 <div className="w-3 h-3 bg-purple-500 rounded-full" />
               </div>
             </div>
