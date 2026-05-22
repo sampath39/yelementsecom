@@ -2,6 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #0f172a;
+    
+    --primary: #16a34a;
+    --primary-foreground: #ffffff;
+    
+    --secondary: #dcfce7;
+    --secondary-foreground: #14532d;
+    
+    --muted: #f0fdf4;
+    --muted-foreground: #166534;
+    
+    --border: #bbf7d0;
+    
+    --accent: #22c55e;
+    --success: #15803d;
+  }
+
+  .dark {
+    --background: #09090b;
+    --foreground: #fafafa;
+    
+    --primary: #15803d;
+    --primary-foreground: #ffffff;
+    
+    --secondary: #27272a;
+    --secondary-foreground: #fafafa;
+    
+    --muted: #27272a;
+    --muted-foreground: #a1a1aa;
+    
+    --border: #27272a;
+    
+    --accent: #22c55e;
+    --success: #16a34a;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-glass-gradient backdrop-blur-md border border-white/20 shadow-glass;
+  }
+  .dark .glass {
+    @apply bg-glass-gradient-dark backdrop-blur-md border border-white/10 shadow-glass;
+  }
+}
 @keyframes float-box {
   0%, 100% {
     transform: translateY(0) translateZ(60px);

@@ -4,6 +4,8 @@ import { useAuth } from "@/lib/auth";
 import { useGetCart, getGetCartQueryKey } from "@workspace/api-client-react";
 import { Header } from "./header";
 import { Footer } from "./footer";
+import { MobileNav } from "./MobileNav";
+import { FloatingCart } from "./FloatingCart";
 import {
   Home,
   Package,
@@ -38,23 +40,22 @@ export function AppLayout({ children }: { children: ReactNode }) {
   ];
 
   return (
-    <div className="min-h-screen flex bg-[#f7fcf8] text-slate-800 font-sans">
-
+    <div className="min-h-screen flex bg-background text-foreground font-sans transition-colors duration-300">
 
       {/* ── MAIN CONTENT WORKSPACE ── */}
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
         <Header />
         
         {/* ⚡ SCROLLING TEXT TICKER FOR ANNOUNCEMENTS & TECHNICS ⚡ */}
-        <div className="bg-[#b5e550] text-emerald-950 py-3 overflow-hidden relative border-b border-[#9ecc3b] shadow-sm z-20 flex items-center min-h-[40px]">
-          <div className="flex items-center animate-[marquee_35s_linear_infinite] whitespace-nowrap gap-12 font-extrabold text-xs uppercase tracking-wider min-w-full leading-none">
+        <div className="bg-primary/20 text-primary-foreground py-3 overflow-hidden relative border-b border-primary/30 shadow-sm z-20 flex items-center min-h-[40px] glass">
+          <div className="flex items-center animate-[marquee_35s_linear_infinite] whitespace-nowrap gap-12 font-extrabold text-xs uppercase tracking-wider min-w-full leading-none text-foreground">
             <span>🎉 Welcome to Yelements Store! Founder: Dr. Suresh Kumar Yele</span>
-            <span className="text-white">🔥 FIRST BULK ORDER DELIVERY FREE! USE CODE "FREEBULK"</span>
+            <span className="text-primary">🔥 FIRST BULK ORDER DELIVERY FREE! USE CODE "FREEBULK"</span>
             <span>🔬 High Precision Labware & Surgical Supplies Vetted by Experts</span>
             <span>📞 Contact Dr. Suresh Kumar Yele: 9290920349 / skyoptixinternational@gmail.com</span>
             <span>🏢 Office: Vijayawada, Andhra Pradesh, India</span>
             <span>🎉 Welcome to Yelements Store! Founder: Dr. Suresh Kumar Yele</span>
-            <span className="text-white">🔥 FIRST BULK ORDER DELIVERY FREE! USE CODE "FREEBULK"</span>
+            <span className="text-primary">🔥 FIRST BULK ORDER DELIVERY FREE! USE CODE "FREEBULK"</span>
             <span>🔬 High Precision Labware & Surgical Supplies Vetted by Experts</span>
             <span>📞 Contact Dr. Suresh Kumar Yele: 9290920349 / skyoptixinternational@gmail.com</span>
             <span>🏢 Office: Vijayawada, Andhra Pradesh, India</span>
@@ -62,11 +63,13 @@ export function AppLayout({ children }: { children: ReactNode }) {
         </div>
 
         {/* Dynamic Inner Panel Viewport */}
-        <main className="flex-1 flex flex-col w-full pb-12">
+        <main className="flex-1 flex flex-col w-full pb-20 lg:pb-12">
           {children}
         </main>
 
         <Footer />
+        <MobileNav />
+        <FloatingCart />
       </div>
     </div>
   );

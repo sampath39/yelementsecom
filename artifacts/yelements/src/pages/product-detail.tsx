@@ -29,7 +29,8 @@ import {
   Share2, 
   RotateCw, 
   Check,
-  CheckCircle2
+  CheckCircle2,
+  Package
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -101,6 +102,14 @@ export default function ProductDetail() {
 
   // 🕰️ Recently Viewed State
   const [recentProducts, setRecentProducts] = useState<Product[]>([]);
+
+  // 🔄 360 View State
+  const [is360View, setIs360View] = useState(false);
+  const [rotationIndex, setRotationIndex] = useState(0);
+
+  // 🚚 Delivery Checker State
+  const [pincode, setPincode] = useState("");
+  const [deliveryStatus, setDeliveryStatus] = useState<{status: 'idle' | 'checking' | 'success' | 'error', message: string}>({ status: 'idle', message: '' });
 
   // 📥 Fetch API endpoints
   const { data: productData, isLoading: loadingProduct } = useGetProduct(productId, {
@@ -285,6 +294,22 @@ export default function ProductDetail() {
     }).format(price);
   };
 
+  const handleCheckDelivery = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (pincode.length !== 6) {
+      setDeliveryStatus({ status: 'error', message: 'Please enter a valid 6-digit pincode' });
+      return;
+    }
+    setDeliveryStatus({ status: 'checking', message: 'Checking delivery availability...' });
+    setTimeout(() => {
+      if (pincode.startsWith("1") || pincode.startsWith("4")) {
+        setDeliveryStatus({ status: 'success', message: 'Next Day Delivery available to this location! 🚀' });
+      } else {
+        setDeliveryStatus({ status: 'success', message: 'Standard Delivery (3-5 days) available.' });
+      }
+    }, 1500);
+  };
+
   if (loadingProduct) {
     return (
       <AppLayout>
@@ -408,20 +433,64 @@ export default function ProductDetail() {
 
         {/* Main Columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
-          {/* Left Column: Product Image */}
+          {/* Left Column: Product Image & 360 View */}
           <div className="space-y-6">
-            <div className="bg-card border border-border rounded-2xl p-8 flex items-center justify-center aspect-square relative shadow-sm">
+            <div className="bg-card border border-border rounded-2xl p-8 flex flex-col items-center justify-center aspect-square relative shadow-sm group">
               {product.originalPrice && product.originalPrice > product.price && (
                 <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold z-10 shadow">
                   SAVE {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
                 </div>
               )}
+              
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="absolute top-4 right-4 z-10 gap-2 bg-background/80 backdrop-blur"
+                onClick={() => setIs360View(!is360View)}
+              >
+                <RotateCw className={`w-4 h-4 ${is360View ? 'text-primary animate-spin' : ''}`} /> 
+                {is360View ? 'Exit 360°' : '360° View'}
+              </Button>
+
               {product.imageUrl ? (
-                <img 
-                  src={product.imageUrl} 
-                  alt={product.name} 
-                  className="w-full h-full object-contain hover:scale-105 transition duration-500" 
-                />
+                is360View ? (
+                  <div className="w-full flex flex-col items-center gap-4">
+                    <div className="relative w-full h-full cursor-ew-resize select-none flex items-center justify-center"
+                         onMouseMove={(e) => {
+                           if (e.buttons === 1) {
+                             const rect = e.currentTarget.getBoundingClientRect();
+                             const x = e.clientX - rect.left;
+                             const percentage = x / rect.width;
+                             setRotationIndex(Math.floor(percentage * 36));
+                           }
+                         }}>
+                      <img 
+                        src={product.imageUrl} 
+                        alt={product.name} 
+                        className="w-full h-full object-contain transition-transform duration-75"
+                        style={{ transform: `rotateY(${rotationIndex * 10}deg)` }}
+                        draggable="false"
+                      />
+                      <div className="absolute bottom-0 text-xs text-muted-foreground font-semibold bg-background/50 px-3 py-1 rounded-full pointer-events-none">
+                        Drag to rotate
+                      </div>
+                    </div>
+                    <input 
+                      type="range" 
+                      min="0" 
+                      max="35" 
+                      value={rotationIndex}
+                      onChange={(e) => setRotationIndex(parseInt(e.target.value))}
+                      className="w-full max-w-[200px] accent-primary"
+                    />
+                  </div>
+                ) : (
+                  <img 
+                    src={product.imageUrl} 
+                    alt={product.name} 
+                    className="w-full h-full object-contain hover:scale-105 transition duration-500" 
+                  />
+                )
               ) : (
                 <Box className="w-32 h-32 text-muted-foreground/30 animate-pulse" />
               )}
@@ -617,6 +686,31 @@ export default function ProductDetail() {
               </div>
             </div>
 
+            {/* 🚚 DELIVERY CHECKER */}
+            <div className="mb-6 bg-card border rounded-2xl p-5">
+              <h4 className="text-sm font-bold flex items-center gap-2 mb-3">
+                <Truck className="w-4 h-4 text-primary" /> Delivery Options & Estimates
+              </h4>
+              <form onSubmit={handleCheckDelivery} className="flex gap-2">
+                <input 
+                  type="text" 
+                  placeholder="Enter 6-digit Pincode" 
+                  maxLength={6}
+                  value={pincode}
+                  onChange={(e) => setPincode(e.target.value.replace(/\D/g, ''))}
+                  className="flex-1 px-3 py-2 border rounded-lg text-sm bg-background focus:ring-2 focus:ring-primary/20 outline-none"
+                />
+                <Button type="submit" variant="secondary" className="font-semibold px-6" disabled={deliveryStatus.status === 'checking'}>
+                  Check
+                </Button>
+              </form>
+              {deliveryStatus.status !== 'idle' && (
+                <p className={`text-xs mt-3 font-semibold ${deliveryStatus.status === 'error' ? 'text-destructive' : deliveryStatus.status === 'success' ? 'text-emerald-600' : 'text-muted-foreground'}`}>
+                  {deliveryStatus.message}
+                </p>
+              )}
+            </div>
+
             {/* 📄 COMPARE SPECIFICATIONS TOGGLE */}
             <div className="mt-2 mb-6">
               <Button
@@ -663,6 +757,30 @@ export default function ProductDetail() {
                 <ShieldCheck className="w-5 h-5 text-emerald-600" />
                 <span>Verified Quality Standards</span>
               </div>
+            </div>
+
+            {/* 🎁 BUNDLE OFFERS / FREQUENTLY BOUGHT TOGETHER */}
+            <div className="mt-8 border border-amber-200 bg-amber-50/50 p-5 rounded-2xl">
+              <h4 className="font-bold text-sm text-amber-900 mb-4 flex items-center gap-2">
+                <Package className="w-4 h-4 text-amber-600" /> Frequently Bought Together
+              </h4>
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 bg-white border border-amber-100 rounded-lg p-2 shrink-0 flex items-center justify-center">
+                  <img src={product.imageUrl} alt="" className="max-h-full object-contain" />
+                </div>
+                <div className="text-amber-600 font-bold">+</div>
+                <div className="w-16 h-16 bg-white border border-amber-100 rounded-lg p-2 shrink-0 flex items-center justify-center relative">
+                  <div className="absolute -top-2 -right-2 bg-red-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded shadow">SALE</div>
+                  <Box className="w-8 h-8 text-amber-300" />
+                </div>
+                <div className="flex-1 ml-2">
+                  <p className="text-xs font-bold text-amber-900">Standard Accessory Kit</p>
+                  <p className="text-xs text-amber-700/80 mt-0.5">+ {formatPrice(product.price * 0.15)}</p>
+                </div>
+              </div>
+              <Button className="w-full mt-4 bg-amber-500 hover:bg-amber-600 text-white shadow-sm font-bold h-10 text-xs">
+                Add Bundle to Cart & Save 15%
+              </Button>
             </div>
           </div>
         </div>

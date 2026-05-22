@@ -4,7 +4,7 @@ import { ProductCard } from "@/components/product-card";
 import { normalizeProducts, SafeProduct } from "@/lib/normalizeProduct";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState, useEffect, useRef } from "react";
-import { useLocation } from "wouter";
+import { useLocation, useSearch } from "wouter";
 
 // API response type
 interface ProductsResponse {
@@ -15,6 +15,7 @@ interface ProductsResponse {
 
 export default function Products() {
   const [location] = useLocation();
+  const searchString = useSearch();
 
   const [products, setProducts] = useState<SafeProduct[]>([]);
   const [page, setPage] = useState(1);
@@ -30,7 +31,7 @@ export default function Products() {
 
   // Parse category from URL supporting both numeric IDs and string slugs
   useEffect(() => {
-    const params = new URLSearchParams(location.split("?")[1] || "");
+    const params = new URLSearchParams(searchString || "");
     const cat = params.get("category");
     if (!cat) {
       setCategoryId(undefined);
@@ -47,10 +48,10 @@ export default function Products() {
     setProducts([]);
     setPage(1);
     setHasMore(true);
-  }, [location, categories]);
+  }, [searchString, categories]);
 
   // API call (infinite scroll & sorting)
-  const params = new URLSearchParams(location.split("?")[1] || "");
+  const params = new URLSearchParams(searchString || "");
   const rawCategorySlug = params.get("category") || undefined;
 
   const { data, isLoading } = useGetProducts(

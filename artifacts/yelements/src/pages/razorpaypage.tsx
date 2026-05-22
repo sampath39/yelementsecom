@@ -131,10 +131,10 @@ export default function RazorpayPage() {
 
   return (
     <div className="min-h-[80vh] flex flex-col items-center justify-center bg-gray-50/50">
-      <div className="flex flex-col items-center space-y-4">
+      <div className="flex flex-col items-center space-y-4 bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-xl border border-gray-100 dark:border-slate-800">
         <div className="w-12 h-12 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-        <h1 className="text-xl font-bold text-gray-800 animate-pulse">Launching Secure UPI Portal...</h1>
-        <p className="text-sm text-gray-500 max-w-xs text-center">Please do not refresh the page or click back while redirecting.</p>
+        <h1 className="text-xl font-bold text-gray-800 dark:text-white animate-pulse">Launching Secure UPI Portal...</h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs text-center">Please do not refresh the page or click back while redirecting.</p>
       </div>
     </div>
   );
