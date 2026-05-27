@@ -128,6 +128,15 @@ router.post("/orders", requireAuth, async (req, res): Promise<void> => {
     .set({ items: [], updatedAt: new Date() })
     .where(eq(cartsTable.userId, userId));
 
+  // ---------- SEND OTP VIA SMS TO CUSTOMER ----------
+  if (user && user.phone) {
+    // TODO: Integrate with SMS service (Twilio, etc.)
+    // For now, log the OTP that would be sent
+    console.log(`📱 SMS would be sent to ${user.phone}: Your delivery OTP is ${otp}`);
+  } else {
+    console.warn(`User ${userId} has no phone number - cannot send OTP via SMS`);
+  }
+
   // ---------- SEND CONFIRMATION EMAIL (non‑blocking) ----------
   if (user && user.email) {
     const emailHtml = `
@@ -284,6 +293,12 @@ router.post("/orders/:id/vendor-verify-otp", requireVendorOrAdmin, async (req, r
       .where(eq(ordersTable.id, id));
     if (!order) {
       res.status(404).json({ error: "Order not found" });
+      return;
+    }
+
+    // Check if order is already delivered
+    if (order.status === "delivered") {
+      res.status(400).json({ error: "Order is already delivered" });
       return;
     }
 

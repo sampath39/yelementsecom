@@ -48,7 +48,6 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [updatingUserId, setUpdatingUserId] = useState<number | null>(null);
   const [userDiscounts, setUserDiscounts] = useState<Record<number, string>>({});
-  const [selectedOrderOTP, setSelectedOrderOTP] = useState<{ id: number; otp: string } | null>(null);
 
   const { data: stats, isLoading: loadingStats } = useGetAdminStats({
     query: {
@@ -102,14 +101,6 @@ export default function AdminDashboard() {
       .catch((err) => {
         toast.error(err.message || "Error updating order status");
       });
-  };
-
-  const handleShowOTP = (order: any) => {
-    if (order.otp) {
-      setSelectedOrderOTP({ id: order.id, otp: order.otp });
-    } else {
-      toast.error("No OTP available for this order");
-    }
   };
 
   const handleUpdateDiscount = (userId: number) => {
@@ -475,24 +466,14 @@ export default function AdminDashboard() {
                                 </Button>
                               )}
                               {order.status === 'shipped' && (
-                                <>
-                                  <Button 
-                                    size="sm" 
-                                    variant="outline" 
-                                    className="h-7 px-2 text-xs bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-200"
-                                    onClick={() => handleUpdateStatus(order.id, 'delivered')}
-                                  >
-                                    Deliver
-                                  </Button>
-                                  <Button 
-                                    size="sm" 
-                                    variant="outline" 
-                                    className="h-7 px-2 text-xs bg-blue-50 text-blue-700 hover:bg-blue-100 border-blue-200"
-                                    onClick={() => handleShowOTP(order)}
-                                  >
-                                    Show OTP
-                                  </Button>
-                                </>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="h-7 px-2 text-xs bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-200"
+                                  onClick={() => handleUpdateStatus(order.id, 'delivered')}
+                                >
+                                  Deliver
+                                </Button>
                               )}
                               {order.status !== 'delivered' && order.status !== 'cancelled' && (
                                 <Button 
@@ -564,32 +545,6 @@ export default function AdminDashboard() {
             </Card>
           </div>
         </div>
-
-        {/* OTP Modal */}
-        {selectedOrderOTP && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-2xl p-6 max-w-sm w-full mx-4 shadow-2xl">
-              <h3 className="text-lg font-bold mb-2">Delivery OTP</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Order #{selectedOrderOTP.id}
-              </p>
-              <div className="bg-emerald-50 border-2 border-emerald-200 rounded-xl p-6 text-center mb-4">
-                <p className="text-4xl font-black text-emerald-700 tracking-widest">
-                  {selectedOrderOTP.otp}
-                </p>
-              </div>
-              <p className="text-xs text-muted-foreground mb-4 text-center">
-                Share this OTP with the delivery person
-              </p>
-              <Button
-                className="w-full bg-emerald-600 hover:bg-emerald-700"
-                onClick={() => setSelectedOrderOTP(null)}
-              >
-                Close
-              </Button>
-            </div>
-          </div>
-        )}
       </div>
     </AppLayout>
   );
