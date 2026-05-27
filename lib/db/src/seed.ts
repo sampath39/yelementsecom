@@ -12,7 +12,7 @@ async function seed() {
   const vendorPassword = await bcrypt.hash("vendor123", 10);
   const userPassword = await bcrypt.hash("user123", 10);
 
-  // Insert users
+  // Insert or update users
   console.log("Inserting users...");
   await db.insert(usersTable).values([
     {
@@ -39,9 +39,9 @@ async function seed() {
       referralCode: "USER-2026",
       rewardPoints: 100,
     },
-  ]);
+  ]).onConflictDoNothing();
 
-  // Insert categories
+  // Insert or update categories
   console.log("Inserting categories...");
   await db.insert(categoriesTable).values([
     {
@@ -107,7 +107,7 @@ async function seed() {
       isActive: true,
       sortOrder: 7,
     },
-  ]);
+  ]).onConflictDoNothing();
 
   // Get category IDs
   const categories = await db.select().from(categoriesTable);
@@ -118,7 +118,7 @@ async function seed() {
   // Get vendor ID
   const vendor = await db.select().from(usersTable).where(eq(usersTable.email, "vendor@yelements.com"));
 
-  // Insert products
+  // Insert or update products
   console.log("Inserting products...");
   await db.insert(productsTable).values(
     [
@@ -259,9 +259,9 @@ async function seed() {
         tags: ["electronics", "lamp", "lighting"],
       },
     ]
-  );
+  ).onConflictDoNothing();
 
-  // Insert sample address for user
+  // Insert or update sample address for user
   console.log("Inserting sample address...");
   const user = await db.select().from(usersTable).where(eq(usersTable.email, "user@yelements.com"));
   await db.insert(addressesTable).values({
@@ -275,9 +275,9 @@ async function seed() {
     pincode: "600001",
     country: "India",
     isDefault: true,
-  });
+  }).onConflictDoNothing();
 
-  // Insert sample coupons
+  // Insert or update sample coupons
   console.log("Inserting sample coupons...");
   await db.insert(couponsTable).values(
     [
@@ -302,7 +302,7 @@ async function seed() {
         expiresAt: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000), // 15 days from now
       },
     ]
-  );
+  ).onConflictDoNothing();
 
   console.log("Database seed completed successfully!");
   console.log("\n=== Login Credentials ===");
