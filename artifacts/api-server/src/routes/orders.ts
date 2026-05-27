@@ -308,7 +308,7 @@ router.post("/orders/:id/verify-otp", requireAdmin, async (req, res): Promise<vo
 
     const [updated] = await db
       .update(ordersTable)
-      .set({ status: "delivered" })
+      .set({ status: "delivered", paymentStatus: "paid" })
       .where(eq(ordersTable.id, id))
       .returning();
 
@@ -397,7 +397,7 @@ router.post("/orders/:id/vendor-verify-otp", requireVendorOrAdmin, async (req, r
 
     const [updated] = await db
       .update(ordersTable)
-      .set({ status: "delivered" })
+      .set({ status: "delivered", paymentStatus: "paid" })
       .where(eq(ordersTable.id, id))
       .returning();
 
@@ -425,7 +425,7 @@ router.post("/orders/:id/auto-delivery", async (req, res): Promise<void> => {
     if (distance < 0.01) {
       const [updated] = await db
         .update(ordersTable)
-        .set({ status: "delivered" })
+        .set({ status: "delivered", paymentStatus: "paid" })
         .where(eq(ordersTable.id, id))
         .returning();
       res.json({ message: "Auto delivered ✅", order: updated ? formatOrder(updated) : null });
