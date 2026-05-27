@@ -20,6 +20,7 @@ import {
   ShieldAlert,
   Search,
   Percent,
+  Calendar,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -177,7 +178,7 @@ export default function AdminDashboard() {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           {loadingStats ? (
-            Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-32 rounded-xl" />)
+            Array(6).fill(0).map((_, i) => <Skeleton key={i} className="h-32 rounded-xl" />)
           ) : stats && (
             <>
               <Card className="border-border shadow-sm">
@@ -201,6 +202,32 @@ export default function AdminDashboard() {
                   </div>
                   <div className="w-12 h-12 bg-blue-500/10 rounded-full flex items-center justify-center text-blue-600">
                     <ShoppingCart className="w-6 h-6" />
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-border shadow-sm">
+                <CardContent className="p-6 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground mb-1">Daily Revenue</p>
+                    <h3 className="text-3xl font-bold text-foreground">{formatPrice(stats.dailyRevenue)}</h3>
+                    <p className="text-xs text-green-600 mt-1">{stats.dailyOrders} orders today</p>
+                  </div>
+                  <div className="w-12 h-12 bg-green-500/10 rounded-full flex items-center justify-center text-green-600">
+                    <TrendingUp className="w-6 h-6" />
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="border-border shadow-sm">
+                <CardContent className="p-6 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-muted-foreground mb-1">Monthly Revenue</p>
+                    <h3 className="text-3xl font-bold text-foreground">{formatPrice(stats.monthlyRevenue)}</h3>
+                    <p className="text-xs text-blue-600 mt-1">{stats.monthlyOrders} orders this month</p>
+                  </div>
+                  <div className="w-12 h-12 bg-indigo-500/10 rounded-full flex items-center justify-center text-indigo-600">
+                    <Calendar className="w-6 h-6" />
                   </div>
                 </CardContent>
               </Card>

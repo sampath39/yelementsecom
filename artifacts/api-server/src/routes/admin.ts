@@ -25,11 +25,33 @@ router.get("/admin/stats", requireAdmin, async (_req, res): Promise<void> => {
     .where(sql`stock < 10`);
   const lowStockProducts = lowStockResult[0]?.count ?? 0;
 
+  // Daily sales and orders
+  const dailyResult = await db
+    .select({
+      count: sql<number>`count(*)::int`,
+      total: sql<string>`sum(total)`
+    })
+    .from(ordersTable)
+    .where(sql`DATE(created_at) = CURRENT_DATE`);
+  const dailyOrders = dailyResult[0]?.count ?? 0;
+  const dailyRevenue = Number(dailyResult[0]?.total ?? 0);
+
+  // Monthly sales and orders
+  const monthlyResult = await db
+    .select({
+      count: sql<number>`count(*)::int`,
+      total: sql<string>`sum(total)`
+    })
+    .from(ordersTable)
+    .where(sql`DATE_TRUNC('month', created_at) = DATE_TRUNC('month', CURRENT_DATE)`);
+  const monthlyOrders = monthlyResult[0]?.count ?? 0;
+  const monthlyRevenue = Number(monthlyResult[0]?.total ?? 0);
+
   const recentOrders = await db
     .select()
     .from(ordersTable)
     .orderBy(sql`created_at desc`)
-    .limit(5);
+    .limit(10);
 
   const topProducts = await db
     .select()
@@ -43,6 +65,10 @@ router.get("/admin/stats", requireAdmin, async (_req, res): Promise<void> => {
     totalRevenue,
     pendingOrders,
     lowStockProducts,
+    dailyOrders,
+    dailyRevenue,
+    monthlyOrders,
+    monthlyRevenue,
     recentOrders: recentOrders.map((o) => ({
       id: o.id,
       userId: o.userId,
