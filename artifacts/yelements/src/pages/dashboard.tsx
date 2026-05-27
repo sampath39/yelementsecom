@@ -41,7 +41,8 @@ export default function Dashboard() {
       return;
     }
 
-    fetch("/api/orders", {
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    fetch(`${apiUrl}/api/orders`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(async (res) => {

@@ -45,29 +45,31 @@ export default function Rewards() {
     if (!token) return;
 
     try {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
       // Fetch balance
-      const balanceRes = await fetch("/api/rewards/balance", {
+      const balanceRes = await fetch(`${apiUrl}/api/rewards/balance`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const balanceData = await balanceRes.json();
       if (balanceData.success) setBalance(balanceData.balance);
 
       // Fetch history
-      const historyRes = await fetch("/api/rewards/history", {
+      const historyRes = await fetch(`${apiUrl}/api/rewards/history`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const historyData = await historyRes.json();
       if (historyData.success) setHistory(historyData.data);
 
       // Fetch checkin status
-      const checkinRes = await fetch("/api/rewards/checkin-status", {
+      const checkinRes = await fetch(`${apiUrl}/api/rewards/checkin-status`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const checkinData = await checkinRes.json();
       if (checkinData.success) setCheckinStatus(checkinData);
 
       // Fetch spin status
-      const spinRes = await fetch("/api/rewards/spin-status", {
+      const spinRes = await fetch(`${apiUrl}/api/rewards/spin-status`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const spinData = await spinRes.json();
@@ -84,7 +86,8 @@ export default function Rewards() {
     if (!token) return;
 
     try {
-      const res = await fetch("/api/rewards/checkin", {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const res = await fetch(`${apiUrl}/api/rewards/checkin`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -106,7 +109,8 @@ export default function Rewards() {
     if (!token) return;
 
     try {
-      const res = await fetch("/api/rewards/spin", {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const res = await fetch(`${apiUrl}/api/rewards/spin`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -180,7 +184,7 @@ export default function Rewards() {
                 <div className="flex gap-3">
                   <Button 
                     onClick={() => setLocation("/redeem")}
-                    className="bg-white text-orange-600 hover:bg-orange-50 font-bold flex-1"
+                    className="bg-emerald-600 text-white hover:bg-emerald-700 font-bold flex-1"
                   >
                     Redeem Points
                   </Button>

@@ -35,15 +35,17 @@ export default function Referral() {
     if (!token) return;
 
     try {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
       // Fetch referral code
-      const codeRes = await fetch("/api/referrals/my-code", {
+      const codeRes = await fetch(`${apiUrl}/api/referrals/my-code`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const codeData = await codeRes.json();
       if (codeData.success) setReferralCode(codeData.referralCode);
 
       // Fetch referrals
-      const referralsRes = await fetch("/api/referrals/my-referrals", {
+      const referralsRes = await fetch(`${apiUrl}/api/referrals/my-referrals`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const referralsData = await referralsRes.json();
@@ -122,14 +124,14 @@ export default function Referral() {
                 <div className="flex gap-3">
                   <Button 
                     onClick={copyReferralCode}
-                    className="bg-white text-blue-600 hover:bg-blue-50 font-bold flex-1"
+                    className="bg-emerald-600 text-white hover:bg-emerald-700 font-bold flex-1"
                   >
                     <Copy className="w-4 h-4 mr-2" /> Copy Code
                   </Button>
                   <Button 
                     onClick={shareReferral}
                     variant="outline" 
-                    className="border-white text-white hover:bg-white/10 hover:text-white font-bold flex-1"
+                    className="border-emerald-600 text-emerald-600 hover:bg-emerald-50 font-bold flex-1"
                   >
                     <Share2 className="w-4 h-4 mr-2" /> Share
                   </Button>

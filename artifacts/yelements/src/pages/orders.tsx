@@ -16,20 +16,31 @@ export default function Orders() {
 
   useEffect(() => {
     const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
     fetch(`${apiUrl}/api/orders`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((res) => res.json())
+      .then(async (res) => {
+        if (!res.ok) {
+          if (res.status === 404) {
+            setOrders([]);
+            setLoading(false);
+            return;
+          }
+          throw new Error(`HTTP ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
-        setOrders(data);
+        setOrders(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch((err) => {
         console.error(err);
+        setOrders([]);
         setLoading(false);
       });
   }, []);
