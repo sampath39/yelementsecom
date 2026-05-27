@@ -133,6 +133,8 @@ export default function Checkout() {
     if (data.paymentMethod === "cod") {
       const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+      console.log("📦 Creating COD order to:", `${apiUrl}/api/orders`);
+      
       fetch(`${apiUrl}/api/orders`, {
         method: "POST",
         headers: {
@@ -146,18 +148,23 @@ export default function Checkout() {
         }),
       })
         .then(async (res) => {
+          console.log("📦 Order response status:", res.status);
           if (!res.ok) {
             const contentType = res.headers.get("content-type");
+            console.log("📦 Response content-type:", contentType);
             if (contentType && contentType.includes("application/json")) {
               const errData = await res.json();
               throw new Error(errData.error || "Failed to create order");
             } else {
+              const text = await res.text();
+              console.log("📦 Non-JSON response:", text.substring(0, 200));
               throw new Error(`Server error: ${res.status}`);
             }
           }
           return res.json();
         })
         .then((order) => {
+          console.log("📦 Order created successfully:", order);
           if (appliedCoupon) {
             const active = JSON.parse(localStorage.getItem("yelements_active_coupons") || "[]");
             const filtered = active.filter((c: string) => c !== appliedCoupon);
@@ -168,7 +175,7 @@ export default function Checkout() {
           setLocation("/orders");
         })
         .catch((err) => {
-          console.error(err);
+          console.error("📦 COD order error:", err);
           toast.error(err.message || "Failed to process COD order");
         });
       return;

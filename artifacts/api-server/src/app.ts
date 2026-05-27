@@ -36,6 +36,12 @@ app.use(
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Health check endpoint
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
 app.use("/api", ordersRouter);
 app.use("/api/addresses", addressesRouter);
 app.use("/api/coupons", couponsRouter);
