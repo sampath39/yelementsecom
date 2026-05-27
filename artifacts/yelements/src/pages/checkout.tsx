@@ -147,8 +147,13 @@ export default function Checkout() {
       })
         .then(async (res) => {
           if (!res.ok) {
-            const errData = await res.json();
-            throw new Error(errData.error || "Failed to create order");
+            const contentType = res.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+              const errData = await res.json();
+              throw new Error(errData.error || "Failed to create order");
+            } else {
+              throw new Error(`Server error: ${res.status}`);
+            }
           }
           return res.json();
         })
@@ -187,8 +192,13 @@ export default function Checkout() {
       })
         .then(async (res) => {
           if (!res.ok) {
-            const errData = await res.json();
-            throw new Error(errData.error || "Failed to create order");
+            const contentType = res.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+              const errData = await res.json();
+              throw new Error(errData.error || "Failed to create order");
+            } else {
+              throw new Error(`Server error: ${res.status}`);
+            }
           }
           return res.json();
         })
