@@ -14,7 +14,7 @@ import {
   UpdateOrderStatusBody,
   UpdateOrderStatusParams,
 } from "@workspace/api-zod";
-import { requireAuth, requireAdmin } from "../lib/auth";
+import { requireAuth, requireAdmin, requireVendorOrAdmin } from "../lib/auth";
 
 const router: IRouter = Router();
 
@@ -233,6 +233,43 @@ router.get("/admin/orders", requireAdmin, async (_req, res): Promise<void> => {
 
 // ------------------ ADMIN: VERIFY OTP ------------------
 router.post("/orders/:id/verify-otp", requireAdmin, async (req, res): Promise<void> => {
+  try {
+    const id = Number(req.params.id);
+    const { otp } = req.body;
+    if (!otp) {
+      res.status(400).json({ error: "OTP is required" });
+      return;
+    }
+
+    const [order] = await db
+      .select()
+      .from(ordersTable)
+      .where(eq(ordersTable.id, id));
+    if (!order) {
+      res.status(404).json({ error: "Order not found" });
+      return;
+    }
+
+    if ((order as any).otp !== otp) {
+      res.status(400).json({ error: "Invalid OTP" });
+      return;
+    }
+
+    const [updated] = await db
+      .update(ordersTable)
+      .set({ status: "delivered" })
+      .where(eq(ordersTable.id, id))
+      .returning();
+
+    res.json({ message: "OTP verified, order delivered", order: formatOrder(updated) });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "OTP verification failed" });
+  }
+});
+
+// ------------------ VENDOR: VERIFY OTP ------------------
+router.post("/orders/:id/vendor-verify-otp", requireVendorOrAdmin, async (req, res): Promise<void> => {
   try {
     const id = Number(req.params.id);
     const { otp } = req.body;

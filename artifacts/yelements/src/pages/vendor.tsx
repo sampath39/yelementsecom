@@ -85,6 +85,41 @@ export default function VendorDashboard() {
     },
   });
 
+  const handleVerifyOTP = async (orderId: number) => {
+    const otpInput = document.getElementById(`otp-${orderId}`) as HTMLInputElement;
+    const otp = otpInput?.value;
+    
+    if (!otp) {
+      toast.error("Please enter OTP");
+      return;
+    }
+
+    const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+    try {
+      const res = await fetch(`${apiUrl}/api/orders/${orderId}/vendor-verify-otp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ otp }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to verify OTP");
+      }
+
+      toast.success("OTP verified! Order marked as delivered");
+      queryClient.invalidateQueries({ queryKey: getGetVendorStatsQueryKey(user?.id ?? 0) });
+      if (otpInput) otpInput.value = "";
+    } catch (err: any) {
+      toast.error("Failed to verify OTP", { description: err.message });
+    }
+  };
+
   const { data: categories } = useGetCategories();
 
   const createProductMutation = useCreateProduct();
@@ -365,6 +400,24 @@ export default function VendorDashboard() {
                           </div>
                         ))}
                       </div>
+                      {order.status === 'shipped' && (
+                        <div className="mt-3 pt-3 border-t">
+                          <div className="flex gap-2">
+                            <Input
+                              placeholder="Enter OTP"
+                              className="flex-1"
+                              id={`otp-${order.id}`}
+                            />
+                            <Button
+                              size="sm"
+                              className="bg-emerald-600 hover:bg-emerald-700"
+                              onClick={() => handleVerifyOTP(order.id)}
+                            >
+                              Verify
+                            </Button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))
                 ) : (
