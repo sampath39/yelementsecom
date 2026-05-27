@@ -108,10 +108,16 @@ export default function VendorDashboard() {
       });
 
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Failed to verify OTP");
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await res.json();
+          throw new Error(data.error || "Failed to verify OTP");
+        } else {
+          throw new Error(`Server error: ${res.status}`);
+        }
       }
 
+      const data = await res.json();
       toast.success("OTP verified! Order marked as delivered");
       queryClient.invalidateQueries({ queryKey: getGetVendorStatsQueryKey(user?.id ?? 0) });
       if (otpInput) otpInput.value = "";
@@ -133,8 +139,13 @@ export default function VendorDashboard() {
       });
 
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Failed to send OTP");
+        const contentType = res.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await res.json();
+          throw new Error(data.error || "Failed to send OTP");
+        } else {
+          throw new Error(`Server error: ${res.status}`);
+        }
       }
 
       const data = await res.json();

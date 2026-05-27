@@ -1,5 +1,6 @@
 import { Router, type IRouter } from "express";
-import { eq } from "drizzle-orm";
+import { eq, and, gte, lte, ilike, sql, or, asc } from "drizzle-orm";
+import { desc } from "drizzle-orm";
 import { transporter } from "../lib/mail";
 import {
   db,
@@ -127,6 +128,39 @@ router.post("/orders", requireAuth, async (req, res): Promise<void> => {
     .update(cartsTable)
     .set({ items: [], updatedAt: new Date() })
     .where(eq(cartsTable.userId, userId));
+
+  // ---------- ADD 1% CASHBACK TO USER WALLET ----------
+  const cashbackAmount = Math.floor(finalTotal * 0.01); // 1% cashback
+  if (cashbackAmount > 0 && parsed.data.paymentMethod !== "cashback") {
+    await db
+      .update(usersTable)
+      .set({ 
+        cashbackBalance: sql`cashback_balance + ${cashbackAmount}` 
+      })
+      .where(eq(usersTable.id, userId));
+    console.log(`💰 Added ₹${cashbackAmount} cashback to user ${userId}`);
+  }
+
+  // ---------- DEDUCT CASHBACK IF PAYMENT METHOD IS CASHBACK ----------
+  if (parsed.data.paymentMethod === "cashback") {
+    const [currentUser] = await db
+      .select({ cashbackBalance: usersTable.cashbackBalance })
+      .from(usersTable)
+      .where(eq(usersTable.id, userId));
+
+    if (!currentUser || currentUser.cashbackBalance < finalTotal) {
+      res.status(400).json({ error: "Insufficient cashback balance" });
+      return;
+    }
+
+    await db
+      .update(usersTable)
+      .set({ 
+        cashbackBalance: sql`cashback_balance - ${finalTotal}` 
+      })
+      .where(eq(usersTable.id, userId));
+    console.log(`💸 Deducted ₹${finalTotal} from cashback for user ${userId}`);
+  }
 
   // ---------- SEND CONFIRMATION EMAIL (non‑blocking) ----------
   if (user && user.email) {

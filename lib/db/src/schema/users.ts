@@ -17,6 +17,7 @@ export const usersTable = pgTable("users", {
   rewardPoints: integer("reward_points").default(0).notNull(),
   avatarUrl: text("avatar_url"),
   referredBy: integer("referred_by"),
+  cashbackBalance: integer("cashback_balance").default(0).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

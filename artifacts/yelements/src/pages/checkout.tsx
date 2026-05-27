@@ -19,7 +19,7 @@ const checkoutSchema = z.object({
   mobile: z.string().min(10, "Please provide a valid 10-digit mobile number"),
   address: z.string().min(10, "Please provide a complete shipping address"),
   landmark: z.string().min(3, "Please provide a landmark for delivery"),
-  paymentMethod: z.enum(["card", "upi", "cod"]),
+  paymentMethod: z.enum(["card", "upi", "cod", "cashback"]),
 });
 
 type CheckoutFormValues = z.infer<typeof checkoutSchema>;
@@ -33,11 +33,26 @@ export default function Checkout() {
   const [appliedCoupon, setAppliedCoupon] = useState("");
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [userCoupons, setUserCoupons] = useState<string[]>([]);
+  const [cashbackBalance, setCashbackBalance] = useState(0);
 
   useEffect(() => {
     if (user) {
       const storedCoupons = JSON.parse(localStorage.getItem("yelements_active_coupons") || "[]");
       setUserCoupons(storedCoupons);
+      
+      // Fetch cashback balance
+      const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      fetch(`${apiUrl}/api/users/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.cashbackBalance) {
+            setCashbackBalance(data.cashbackBalance);
+          }
+        })
+        .catch(err => console.error("Failed to fetch cashback balance", err));
     }
   }, [user]);
 
@@ -297,6 +312,18 @@ export default function Checkout() {
                             <RadioGroupItem value="upi" />
                             <span>UPI (PhonePe / GPay / Paytm / Razorpay)</span>
                           </div>
+
+                          <div className="flex items-center gap-2 mt-2">
+                            <RadioGroupItem value="cod" />
+                            <span>Cash on Delivery</span>
+                          </div>
+
+                          {cashbackBalance > 0 && (
+                            <div className="flex items-center gap-2 mt-2">
+                              <RadioGroupItem value="cashback" />
+                              <span>Cashback Wallet (Balance: ₹{cashbackBalance})</span>
+                            </div>
+                          )}
 
                           <div className="flex items-center gap-2 mt-2">
                             <RadioGroupItem value="cod" />
