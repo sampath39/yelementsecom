@@ -46,13 +46,17 @@ export default function Checkout() {
       fetch(`${apiUrl}/api/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-        .then(res => res.json())
-        .then(data => {
-          if (data.cashbackBalance) {
+        .then(async (res) => {
+          if (!res.ok) throw new Error("Failed to fetch user");
+          const data = await res.json();
+          if (data.cashbackBalance !== undefined) {
             setCashbackBalance(data.cashbackBalance);
           }
         })
-        .catch(err => console.error("Failed to fetch cashback balance", err));
+        .catch(err => {
+          console.error("Failed to fetch cashback balance", err);
+          setCashbackBalance(0);
+        });
     }
   }, [user]);
 

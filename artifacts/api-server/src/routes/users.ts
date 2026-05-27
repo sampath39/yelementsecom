@@ -6,6 +6,19 @@ import { requireAdmin, requireAuth } from "../lib/auth";
 
 const router: IRouter = Router();
 
+// Get current user (me)
+router.get("/users/me", requireAuth, async (req, res): Promise<void> => {
+  const userId = (req as any).userId as number;
+
+  const [user] = await db.select().from(usersTable).where(eq(usersTable.id, userId));
+  if (!user) {
+    res.status(404).json({ error: "User not found" });
+    return;
+  }
+
+  res.json(formatUser(user));
+});
+
 function formatUser(user: typeof usersTable.$inferSelect) {
   return {
     id: user.id,
@@ -15,6 +28,10 @@ function formatUser(user: typeof usersTable.$inferSelect) {
     address: user.address,
     phone: user.phone,
     discount: user.discount,
+    referralCode: user.referralCode,
+    rewardPoints: user.rewardPoints,
+    avatarUrl: user.avatarUrl,
+    cashbackBalance: user.cashbackBalance,
     createdAt: user.createdAt.toISOString(),
   };
 }
