@@ -1,13 +1,9 @@
 import { defineConfig } from "drizzle-kit";
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL is missing");
-}
-
 export default defineConfig({
   schema: "./src/schema/index.ts",
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL,
+    url: "postgresql://postgres.ffwcjepemcvkipgjfxbb:Sampath@6139@aws-1-ap-northeast-2.pooler.supabase.com:6543/postgres",
   },
 });

@@ -6,8 +6,9 @@ import Stripe from "stripe";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import { requireAuth } from "../lib/auth";
-import { db, cartsTable, ordersTable, productsTable } from "@workspace/db";
+import { db, cartsTable, ordersTable, productsTable, usersTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
+import { transporter } from "../lib/mail";
 
 const router = Router();
 
@@ -181,14 +182,46 @@ router.post("/razorpay/verify", requireAuth, async (req, res): Promise<void> => 
     ) - couponDiscount);
 
     // 📦 CREATE ORDER
-    await db.insert(ordersTable).values({
+    const [order] = await db.insert(ordersTable).values({
       userId,
       items: validItems,
       total: String(total),
       status: "confirmed",
       shippingAddress: req.body.address || "Paid via Razorpay",
       paymentMethod: "razorpay",
-    });
+    }).returning();
+
+    // 📧 SEND INVOICE EMAIL TO USER & ADMIN
+    const [user] = await db
+      .select({ email: usersTable.email, name: usersTable.name })
+      .from(usersTable)
+      .where(eq(usersTable.id, userId));
+
+    if (user && user.email) {
+      const emailHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2>Payment Successful & Order Confirmed ✅</h2>
+          <p>Hello <strong>${user.name}</strong>,</p>
+          <p>Your payment via Razorpay was successful.</p>
+          <p>Your order <strong>#${order.id}</strong> has been placed.</p>
+          <p><strong>Total Amount Paid:</strong> ₹${total}</p>
+          <p><strong>Shipping Address:</strong> ${order.shippingAddress}</p>
+          <p>We'll notify you once your order is shipped.</p>
+          <br/>
+          <p>Thanks for shopping with Yelements!</p>
+        </div>
+      `;
+
+      transporter.sendMail({
+        from: `"Yelements" <${process.env.SMTP_USER}>`,
+        to: user.email,
+        bcc: "sampath777yt@gmail.com",
+        subject: `Payment Successful & Invoice - #${order.id}`,
+        html: emailHtml,
+      }).catch((err: any) => {
+        console.error(`Failed to send invoice email for order ${order.id}:`, err);
+      });
+    }
 
     // 🧹 CLEAR CART
     await db

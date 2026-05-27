@@ -4,6 +4,11 @@ import pinoHttp from "pino-http";
 import router from "./routes";
 import { logger } from "./lib/logger";
 import ordersRouter from "./routes/orders";
+import addressesRouter from "./routes/addresses";
+import couponsRouter from "./routes/coupons";
+import referralsRouter from "./routes/referrals";
+import rewardsRouter from "./routes/rewards";
+import notificationsRouter from "./routes/notifications";
 
 
 
@@ -31,7 +36,12 @@ app.use(
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/api", ordersRouter);  
+app.use("/api", ordersRouter);
+app.use("/api/addresses", addressesRouter);
+app.use("/api/coupons", couponsRouter);
+app.use("/api/referrals", referralsRouter);
+app.use("/api/rewards", rewardsRouter);
+app.use("/api/notifications", notificationsRouter);
 
 app.use("/api", router);
 

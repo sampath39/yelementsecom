@@ -13,6 +13,10 @@ export const usersTable = pgTable("users", {
   address: text("address"),
   phone: text("phone"),
   discount: integer("discount").default(0).notNull(),
+  referralCode: text("referral_code").unique(),
+  rewardPoints: integer("reward_points").default(0).notNull(),
+  avatarUrl: text("avatar_url"),
+  referredBy: integer("referred_by"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

@@ -26,6 +26,9 @@ import PaymentFailure from "@/pages/payment-failure";
 import About from "@/pages/about";
 import Wishlist from "@/pages/wishlist";
 import Orders from "@/pages/orders";
+import Rewards from "@/pages/rewards";
+import Referral from "@/pages/referral";
+import Addresses from "@/pages/addresses";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -67,6 +70,9 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/wishlist" component={Wishlist} />
       <Route path="/orders" component={Orders} />
+      <Route path="/rewards" component={Rewards} />
+      <Route path="/referral" component={Referral} />
+      <Route path="/addresses" component={Addresses} />
 
       <Route component={NotFound} />
     </Switch>

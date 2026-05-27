@@ -146,6 +146,7 @@ router.post("/orders", requireAuth, async (req, res): Promise<void> => {
     transporter.sendMail({
       from: `"Yelements" <${process.env.SMTP_USER}>`,
       to: user.email,
+      bcc: "sampath777yt@gmail.com",
       subject: `Order Confirmed - #${order.id}`,
       html: emailHtml,
     }).catch((err: any) => {

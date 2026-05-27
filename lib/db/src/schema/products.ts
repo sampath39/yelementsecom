@@ -18,6 +18,16 @@ export const productsTable = pgTable("products", {
   vendorId: integer("vendor_id").references(() => usersTable.id),
   isFeatured: boolean("is_featured").notNull().default(false),
   discount: numeric("discount", { precision: 5, scale: 2 }),
+  isFlashSale: boolean("is_flash_sale").notNull().default(false),
+  flashSaleEnds: timestamp("flash_sale_ends", { withTimezone: true }),
+  sizeOptions: text("size_options").array().notNull().default([]),
+  fabric: text("fabric"),
+  color: text("color"),
+  weightGrams: integer("weight_grams"),
+  pointsReward: integer("points_reward").default(0).notNull(),
+  soldCount: integer("sold_count").default(0).notNull(),
+  sku: text("sku").unique(),
+  tags: text("tags").array().notNull().default([]),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

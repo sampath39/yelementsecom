@@ -13,14 +13,10 @@ delete process.env.PGSSLMODE;
 
 const { Pool } = pg;
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
-}
+const DATABASE_URL = process.env.DATABASE_URL || "postgresql://postgres.ffwcjepemcvkipgjfxbb:Sampath@6139@aws-1-ap-northeast-2.pooler.supabase.com:6543/postgres";
 
 export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 export const db = drizzle(pool, { schema });
