@@ -321,14 +321,9 @@ export default function Checkout() {
                           {cashbackBalance > 0 && (
                             <div className="flex items-center gap-2 mt-2">
                               <RadioGroupItem value="cashback" />
-                              <span>Cashback Wallet (Balance: ₹{cashbackBalance})</span>
+                              <span>Cashback Wallet Pay (Balance: ₹{cashbackBalance})</span>
                             </div>
                           )}
-
-                          <div className="flex items-center gap-2 mt-2">
-                            <RadioGroupItem value="cod" />
-                            <span>Cash on Delivery (COD)</span>
-                          </div>
                         </RadioGroup>
                       )}
                     />
