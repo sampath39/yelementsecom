@@ -120,6 +120,30 @@ export default function VendorDashboard() {
     }
   };
 
+  const handleSendOTP = async (orderId: number) => {
+    const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+    try {
+      const res = await fetch(`${apiUrl}/api/orders/${orderId}/send-otp`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to send OTP");
+      }
+
+      const data = await res.json();
+      toast.success("OTP sent to customer's phone");
+    } catch (err: any) {
+      toast.error("Failed to send OTP", { description: err.message });
+    }
+  };
+
   const { data: categories } = useGetCategories();
 
   const createProductMutation = useCreateProduct();
@@ -401,7 +425,16 @@ export default function VendorDashboard() {
                         ))}
                       </div>
                       {order.status === 'shipped' && (
-                        <div className="mt-3 pt-3 border-t">
+                        <div className="mt-3 pt-3 border-t space-y-3">
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              className="flex-1 bg-blue-600 hover:bg-blue-700"
+                              onClick={() => handleSendOTP(order.id)}
+                            >
+                              Send OTP
+                            </Button>
+                          </div>
                           <div className="flex gap-2">
                             <Input
                               placeholder="Enter OTP"

@@ -128,15 +128,6 @@ router.post("/orders", requireAuth, async (req, res): Promise<void> => {
     .set({ items: [], updatedAt: new Date() })
     .where(eq(cartsTable.userId, userId));
 
-  // ---------- SEND OTP VIA SMS TO CUSTOMER ----------
-  if (user && user.phone) {
-    // TODO: Integrate with SMS service (Twilio, etc.)
-    // For now, log the OTP that would be sent
-    console.log(`📱 SMS would be sent to ${user.phone}: Your delivery OTP is ${otp}`);
-  } else {
-    console.warn(`User ${userId} has no phone number - cannot send OTP via SMS`);
-  }
-
   // ---------- SEND CONFIRMATION EMAIL (non‑blocking) ----------
   if (user && user.email) {
     const emailHtml = `
@@ -290,6 +281,52 @@ router.post("/orders/:id/verify-otp", requireAdmin, async (req, res): Promise<vo
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "OTP verification failed" });
+  }
+});
+
+// ------------------ VENDOR: SEND OTP VIA SMS ------------------
+router.post("/orders/:id/send-otp", requireVendorOrAdmin, async (req, res): Promise<void> => {
+  try {
+    const id = Number(req.params.id);
+
+    const [order] = await db
+      .select()
+      .from(ordersTable)
+      .where(eq(ordersTable.id, id));
+    if (!order) {
+      res.status(404).json({ error: "Order not found" });
+      return;
+    }
+
+    if (order.status !== "shipped") {
+      res.status(400).json({ error: "Order must be shipped before sending OTP" });
+      return;
+    }
+
+    if (!(order as any).otp) {
+      res.status(400).json({ error: "No OTP available for this order" });
+      return;
+    }
+
+    // Get user phone number
+    const [user] = await db
+      .select({ phone: usersTable.phone })
+      .from(usersTable)
+      .where(eq(usersTable.id, order.userId));
+
+    if (!user || !user.phone) {
+      res.status(400).json({ error: "Customer phone number not available" });
+      return;
+    }
+
+    // TODO: Integrate with SMS service (Twilio, etc.)
+    // For now, log the OTP that would be sent
+    console.log(`📱 SMS would be sent to ${user.phone}: Your delivery OTP is ${(order as any).otp}`);
+
+    res.json({ message: "OTP sent to customer", phone: user.phone });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to send OTP" });
   }
 });
 
