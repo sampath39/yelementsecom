@@ -160,12 +160,52 @@ export default function Checkout() {
           }
           queryClient.invalidateQueries({ queryKey: getGetCartQueryKey() });
           toast.success("Order Placed Successfully!");
-          const finalCODPrice = Math.max(0, (cart.subtotal || 0) - couponDiscount);
-          window.location.href = `/payment/success?amount=${finalCODPrice}&orderId=${order.id}&method=cod`;
+          setLocation("/orders");
         })
         .catch((err) => {
           console.error(err);
           toast.error(err.message || "Failed to process COD order");
+        });
+      return;
+    }
+
+    // 💵 CASHBACK WALLET PAY
+    if (data.paymentMethod === "cashback") {
+      const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+      fetch(`${apiUrl}/api/orders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          shippingAddress: formattedAddress,
+          paymentMethod: "cashback",
+          couponDiscount: couponDiscount,
+        }),
+      })
+        .then(async (res) => {
+          if (!res.ok) {
+            const errData = await res.json();
+            throw new Error(errData.error || "Failed to create order");
+          }
+          return res.json();
+        })
+        .then((order) => {
+          if (appliedCoupon) {
+            const active = JSON.parse(localStorage.getItem("yelements_active_coupons") || "[]");
+            const filtered = active.filter((c: string) => c !== appliedCoupon);
+            localStorage.setItem("yelements_active_coupons", JSON.stringify(filtered));
+          }
+          queryClient.invalidateQueries({ queryKey: getGetCartQueryKey() });
+          queryClient.invalidateQueries({ queryKey: getGetCartQueryKey() });
+          toast.success("Order Placed Successfully!");
+          setLocation("/orders");
+        })
+        .catch((err) => {
+          console.error(err);
+          toast.error(err.message || "Failed to process cashback order");
         });
       return;
     }
