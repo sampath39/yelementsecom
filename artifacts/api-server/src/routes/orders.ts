@@ -116,8 +116,9 @@ router.post("/orders", requireAuth, async (req, res): Promise<void> => {
     items: validItems,
     total: String(finalTotal),
     status: "pending",
-    shippingAddress: parsed.data.shippingAddress,
+    paymentStatus: parsed.data.paymentMethod === "cod" ? "pending" : "paid",
     paymentMethod: parsed.data.paymentMethod,
+    shippingAddress: parsed.data.shippingAddress,
   };
   if ('otp' in ordersTable) insertValues.otp = otp;
 
