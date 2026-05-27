@@ -97,7 +97,7 @@ router.post("/orders", requireAuth, async (req, res): Promise<void> => {
   const rawTotal = validItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
   
   const [user] = await db
-    .select({ email: usersTable.email, name: usersTable.name, discount: usersTable.discount })
+    .select({ email: usersTable.email, name: usersTable.name, discount: usersTable.discount, phone: usersTable.phone })
     .from(usersTable)
     .where(eq(usersTable.id, userId));
 
@@ -204,13 +204,29 @@ router.patch("/orders/:id/status", requireAdmin, async (req, res): Promise<void>
 
   const parsed = UpdateOrderStatusBody.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400). json({ error: parsed.error.message });
+    res.status(400).json({ error: parsed.error.message });
     return;
   }
 
   const validStatuses = ["pending", "processing", "shipped", "delivered", "cancelled"];
   if (!validStatuses.includes(parsed.data.status)) {
     res.status(400).json({ error: "Invalid status" });
+    return;
+  }
+
+  // Check if order is already delivered
+  const [existingOrder] = await db
+    .select()
+    .from(ordersTable)
+    .where(eq(ordersTable.id, params.data.id));
+
+  if (!existingOrder) {
+    res.status(404).json({ error: "Order not found" });
+    return;
+  }
+
+  if (existingOrder.status === "delivered") {
+    res.status(400).json({ error: "Cannot change status of delivered order" });
     return;
   }
 
