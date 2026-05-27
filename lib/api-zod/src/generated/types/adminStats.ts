@@ -15,6 +15,10 @@ export interface AdminStats {
   totalRevenue: number;
   pendingOrders: number;
   lowStockProducts: number;
+  dailyOrders: number;
+  dailyRevenue: number;
+  monthlyOrders: number;
+  monthlyRevenue: number;
   recentOrders: Order[];
   topProducts: Product[];
 }
