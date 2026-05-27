@@ -406,7 +406,7 @@ export default function Checkout() {
                 <Button
                   type="submit"
                   form="checkout-form"
-                  className="w-full mt-4 bg-emerald-650 hover:bg-emerald-700 text-white font-extrabold shadow-md hover:shadow-lg transition py-3 rounded-xl uppercase tracking-wider text-xs cursor-pointer"
+                  className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold shadow-md hover:shadow-lg transition py-3 rounded-xl uppercase tracking-wider text-xs cursor-pointer"
                 >
                   Proceed to Payment
                 </Button>

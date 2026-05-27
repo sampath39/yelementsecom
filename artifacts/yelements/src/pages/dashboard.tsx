@@ -233,10 +233,10 @@ export default function Dashboard() {
                     <p className="text-emerald-100 font-semibold mb-2 uppercase tracking-wider text-xs">Available Balance</p>
                     <h2 className="text-4xl md:text-5xl font-black mb-6">{formatPrice(1250)}</h2>
                     <div className="flex gap-3">
-                      <Button className="bg-white text-emerald-700 hover:bg-emerald-50 font-bold shadow flex-1">
+                      <Button className="bg-emerald-600 text-white hover:bg-emerald-700 font-bold shadow flex-1">
                         Add Money
                       </Button>
-                      <Button variant="outline" className="border-white text-white hover:bg-white/10 hover:text-white font-bold flex-1">
+                      <Button variant="outline" className="border-emerald-600 text-emerald-600 hover:bg-emerald-50 font-bold flex-1">
                         Withdraw
                       </Button>
                     </div>
@@ -298,7 +298,7 @@ export default function Dashboard() {
                     <div className="w-full bg-black/20 rounded-full h-2">
                       <div className="bg-white h-2 rounded-full" style={{ width: '65%' }}></div>
                     </div>
-                    <Button className="w-full mt-6 bg-white text-orange-600 hover:bg-orange-50 font-bold">
+                    <Button className="w-full mt-6 bg-emerald-600 text-white hover:bg-emerald-700 font-bold">
                       Redeem Points
                     </Button>
                   </CardContent>

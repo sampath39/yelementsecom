@@ -193,7 +193,7 @@ export function Header() {
               </DropdownMenu>
             ) : (
               <div className="hidden sm:flex items-center gap-3">
-                <Button variant="outline" asChild className="bg-white/10 text-white border-white/30 hover:bg-white/20 hover:text-white rounded-full font-bold shadow-sm backdrop-blur-md px-6 transition-all">
+                <Button variant="outline" asChild className="bg-emerald-600 text-white border-emerald-700 hover:bg-emerald-700 rounded-full font-bold shadow-sm px-6 transition-all">
                   <Link href="/login">Login</Link>
                 </Button>
                 <Button asChild className="bg-teal-900 text-white hover:bg-teal-950 shadow-lg rounded-full font-bold px-6 transition-all border border-teal-800">

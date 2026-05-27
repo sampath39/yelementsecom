@@ -210,7 +210,7 @@ export default function Wishlist() {
                     )}
                     <button 
                       onClick={() => handleRemove(product.id)}
-                      className="absolute top-3 right-3 w-8 h-8 bg-white/90 backdrop-blur-sm hover:bg-rose-50 rounded-full flex items-center justify-center text-slate-500 hover:text-rose-500 shadow border transition-colors z-10"
+                      className="absolute top-3 right-3 w-8 h-8 bg-emerald-600 hover:bg-emerald-700 rounded-full flex items-center justify-center text-white shadow border transition-colors z-10"
                       title="Remove item"
                     >
                       <Trash2 className="w-4 h-4" />

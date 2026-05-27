@@ -278,7 +278,7 @@ export default function Cart() {
                   </div>
                   
                   <Button 
-                    className="w-full h-12 text-base bg-accent text-accent-foreground hover:bg-accent/90 shadow-sm" 
+                    className="w-full h-12 text-base bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm" 
                     asChild
                   >
                     <Link href="/checkout">
