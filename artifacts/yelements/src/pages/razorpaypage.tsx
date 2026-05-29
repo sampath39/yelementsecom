@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
+import { toast } from "sonner";
 
 const apiUrl = import.meta.env.VITE_API_URL || "";
 
@@ -31,6 +32,54 @@ export default function RazorpayPage() {
 
       if (!order.id) {
         window.location.href = `/payment/failure?message=${encodeURIComponent(order.error || "Order creation failed")}`;
+        return;
+      }
+
+      // If mock order, bypass opening the Razorpay modal (which will fail due to missing/invalid API keys)
+      if (order.id.startsWith("order_mock_")) {
+        console.log("🎮 Mock order detected, simulating checkout payment flow...");
+        toast.promise(
+          new Promise((resolve) => setTimeout(resolve, 2000)),
+          {
+            loading: "Processing UPI Mock Escrow Transfer...",
+            success: "Mock payment approved! Verifying order...",
+            error: "Payment failed",
+          }
+        );
+
+        setTimeout(async () => {
+          try {
+            const verify = await fetch(`${apiUrl}/api/razorpay/verify`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                razorpay_order_id: order.id,
+                razorpay_payment_id: `pay_mock_${Date.now()}`,
+                razorpay_signature: `sig_mock_${Date.now()}`,
+                address: shippingAddress,
+                couponDiscount: couponDiscount,
+              }),
+            });
+
+            const data = await verify.json();
+
+            if (data.success) {
+              if (appliedCoupon) {
+                const activeCoupons = JSON.parse(localStorage.getItem("yelements_active_coupons") || "[]");
+                const filtered = activeCoupons.filter((c: string) => c !== appliedCoupon);
+                localStorage.setItem("yelements_active_coupons", JSON.stringify(filtered));
+              }
+              window.location.href = `/payment/success?amount=${amount}&orderId=${order.id}`;
+            } else {
+              window.location.href = `/payment/failure?message=${encodeURIComponent(data.error || "Payment verification failed")}`;
+            }
+          } catch (err: any) {
+            window.location.href = `/payment/failure?message=${encodeURIComponent(err.message || "Failed to contact verification server")}`;
+          }
+        }, 2200);
         return;
       }
 

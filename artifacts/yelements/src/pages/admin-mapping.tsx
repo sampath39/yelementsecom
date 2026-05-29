@@ -134,7 +134,7 @@ export default function CatalogMappingWorkspace() {
   };
 
   useEffect(() => {
-    if (!user || user.role !== "admin") {
+    if (!user || (user.role !== "admin" && user.role !== "vendor")) {
       setLocation("/dashboard");
       return;
     }

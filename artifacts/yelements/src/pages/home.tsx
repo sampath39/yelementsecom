@@ -19,7 +19,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { HeroSlider } from "@/components/home/HeroSlider";
 import { FloatingCategories } from "@/components/home/FloatingCategories";
 import { FlashSale } from "@/components/home/FlashSale";
-import { MiniGames } from "@/components/home/MiniGames";
 import { RecentlyViewed } from "@/components/home/RecentlyViewed";
 
 export default function Home() {
@@ -83,11 +82,9 @@ export default function Home() {
   return (
     <AppLayout>
 
-      {/* PHASE 2 COMPONENTS */}
       <HeroSlider />
       <FloatingCategories />
       <FlashSale />
-      <MiniGames />
 
       {/* 🌟 SMART COUPON & REWARD SYSTEM WIDGET */}
       {user && (

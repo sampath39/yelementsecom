@@ -62,6 +62,7 @@ interface Product {
   vendorName?: string;
   rating?: number;
   reviewCount?: number;
+  mapping?: any;
 }
 
 export default function ProductDetail() {
@@ -811,28 +812,224 @@ export default function ProductDetail() {
             
             {/* TAB: Specifications */}
             <TabsContent value="specifications" className="pt-6">
-              <div className="bg-card border rounded-xl p-6 md:p-8 max-w-3xl">
-                <h3 className="text-lg font-bold mb-4">Product Details Information</h3>
-                <dl className="divide-y divide-border text-sm">
-                  <div className="py-3 flex justify-between">
-                    <dt className="text-muted-foreground">Category</dt>
-                    <dd className="font-semibold text-slate-800">{product.categoryName}</dd>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                {/* Core & Custom Attributes */}
+                <div className="lg:col-span-2 space-y-6">
+                  <div className="bg-card border rounded-2xl p-6 shadow-sm">
+                    <h3 className="text-base font-extrabold mb-4 text-slate-900 flex items-center gap-2">
+                      <Info className="w-5 h-5 text-teal-600" /> Technical Specifications
+                    </h3>
+                    <dl className="divide-y divide-slate-100 text-sm">
+                      <div className="py-3 flex justify-between">
+                        <dt className="text-slate-500 font-medium">Internal Registry ID</dt>
+                        <dd className="font-mono font-bold text-slate-800">#YEL-{product.id.toString().padStart(6, '0')}</dd>
+                      </div>
+                      
+                      {/* Master Data from Mapping */}
+                      {product.mapping?.masterData ? (
+                        <>
+                          <div className="py-3 flex justify-between">
+                            <dt className="text-slate-500 font-medium">SKU Reference</dt>
+                            <dd className="font-mono font-bold text-slate-800">{product.mapping.masterData.sku || "N/A"}</dd>
+                          </div>
+                          <div className="py-3 flex justify-between">
+                            <dt className="text-slate-500 font-medium">Brand Registry</dt>
+                            <dd className="font-semibold text-slate-800">{product.mapping.masterData.brand || "Generic"}</dd>
+                          </div>
+                          <div className="py-3 flex justify-between">
+                            <dt className="text-slate-500 font-medium">HSN Code</dt>
+                            <dd className="font-semibold text-slate-800">{product.mapping.masterData.hsnCode || "N/A"}</dd>
+                          </div>
+                          <div className="py-3 flex justify-between">
+                            <dt className="text-slate-500 font-medium">GST Rate</dt>
+                            <dd className="font-semibold text-slate-800">{product.mapping.masterData.gst || "18"}%</dd>
+                          </div>
+                          <div className="py-3 flex justify-between">
+                            <dt className="text-slate-500 font-medium">Selling Unit</dt>
+                            <dd className="font-semibold text-slate-800">{product.mapping.masterData.unit || "Piece"}</dd>
+                          </div>
+                          <div className="py-3 flex justify-between">
+                            <dt className="text-slate-500 font-medium">Country of Origin</dt>
+                            <dd className="font-semibold text-slate-800">{product.mapping.masterData.origin || "India"}</dd>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="py-3 flex justify-between">
+                            <dt className="text-slate-500 font-medium">Category</dt>
+                            <dd className="font-semibold text-slate-800">{product.categoryName}</dd>
+                          </div>
+                          {product.subcategory && (
+                            <div className="py-3 flex justify-between">
+                              <dt className="text-slate-500 font-medium">Subcategory</dt>
+                              <dd className="font-semibold text-slate-800">{product.subcategory}</dd>
+                            </div>
+                          )}
+                          <div className="py-3 flex justify-between">
+                            <dt className="text-slate-500 font-medium">Vendor Seller</dt>
+                            <dd className="font-semibold text-slate-800">{product.vendorName || "Yelements Direct Partner"}</dd>
+                          </div>
+                        </>
+                      )}
+
+                      {/* Custom Attributes from Mapping */}
+                      {product.mapping?.attributes?.map((attr: any, idx: number) => (
+                        attr.value && (
+                          <div key={idx} className="py-3 flex justify-between">
+                            <dt className="text-slate-500 font-medium capitalize">{attr.name.replace(/([A-Z])/g, ' $1')}</dt>
+                            <dd className="font-semibold text-slate-800">{attr.value}</dd>
+                          </div>
+                        )
+                      ))}
+                    </dl>
                   </div>
-                  {product.subcategory && (
-                    <div className="py-3 flex justify-between">
-                      <dt className="text-muted-foreground">Subcategory</dt>
-                      <dd className="font-semibold text-slate-800">{product.subcategory}</dd>
+
+                  {/* Taxonomy Breadcrumb Hierarchy */}
+                  {product.mapping?.taxonomy && product.mapping.taxonomy.length > 0 && (
+                    <div className="bg-card border rounded-2xl p-6 shadow-sm">
+                      <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Institutional Taxonomy Hierarchy</h4>
+                      <div className="flex items-center flex-wrap gap-2 text-xs font-semibold text-slate-600 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        {product.mapping.taxonomy.map((node: string, idx: number, arr: any[]) => (
+                          <div key={idx} className="flex items-center gap-2">
+                            <span className={idx === arr.length - 1 ? "text-teal-600 font-extrabold" : ""}>{node}</span>
+                            {idx < arr.length - 1 && <span className="text-slate-300">➔</span>}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
-                  <div className="py-3 flex justify-between">
-                    <dt className="text-muted-foreground">Vendor Seller</dt>
-                    <dd className="font-semibold text-slate-800">{product.vendorName || "Yelements Direct Partner"}</dd>
-                  </div>
-                  <div className="py-3 flex justify-between">
-                    <dt className="text-muted-foreground">Item Identifier</dt>
-                    <dd className="font-mono font-bold text-emerald-700">#YEL-{product.id.toString().padStart(6, '0')}</dd>
-                  </div>
-                </dl>
+
+                  {/* Child Variants List */}
+                  {product.mapping?.variants && product.mapping.variants.length > 0 && (
+                    <div className="bg-card border rounded-2xl p-6 shadow-sm">
+                      <h3 className="text-sm font-extrabold mb-4 text-slate-900 flex items-center gap-2">
+                        <Box className="w-4 h-4 text-teal-600" /> Available Variants & Options
+                      </h3>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-xs text-left text-slate-600 border-collapse">
+                          <thead>
+                            <tr className="border-b text-slate-400 font-bold uppercase tracking-wider text-[10px]">
+                              <th className="pb-2">Option/Size</th>
+                              <th className="pb-2">Child SKU</th>
+                              <th className="pb-2">Unit</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100">
+                            {product.mapping.variants.map((v: any, idx: number) => (
+                              <tr key={idx} className="py-2.5">
+                                <td className="py-2 font-bold text-slate-800">{v.variant} ({v.size})</td>
+                                <td className="py-2 font-mono">{v.sku}</td>
+                                <td className="py-2">{v.packingUnit}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Multi-Supplier Pricing */}
+                  {product.mapping?.suppliers && product.mapping.suppliers.length > 0 && (
+                    <div className="bg-card border rounded-2xl p-6 shadow-sm">
+                      <h3 className="text-sm font-extrabold mb-4 text-slate-900 flex items-center gap-2">
+                        <Users className="w-4 h-4 text-teal-600" /> Multi-Supplier Pricing Grid
+                      </h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {product.mapping.suppliers.map((s: any, idx: number) => (
+                          <div key={idx} className="border border-slate-100 p-4 rounded-xl bg-slate-50/50 flex flex-col justify-between">
+                            <div>
+                              <div className="flex justify-between items-center">
+                                <span className="font-bold text-slate-900 text-xs">{s.name}</span>
+                                <span className="bg-teal-50 text-teal-700 font-black text-[9px] px-2 py-0.5 rounded-full border border-teal-200">{s.rating || "Verified"}</span>
+                              </div>
+                              <p className="text-[10px] text-slate-400 mt-1 font-mono">SKU: {s.sku || "DIRECT"}</p>
+                            </div>
+                            <div className="flex justify-between items-baseline mt-4 border-t pt-2 border-slate-100">
+                              <span className="text-slate-500 text-[10px]">Cost:</span>
+                              <span className="font-black text-slate-900 text-base">{formatPrice(s.price)}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Right Side: Packaging & Docs */}
+                <div className="space-y-6">
+                  
+                  {/* Packaging Configuration */}
+                  {product.mapping?.packSize && (
+                    <div className="bg-card border rounded-2xl p-6 shadow-sm bg-gradient-to-b from-white to-slate-50/35">
+                      <h3 className="text-xs font-black uppercase tracking-wider mb-4 text-slate-800">Packaging Specifications</h3>
+                      <div className="space-y-4 text-xs">
+                        {product.mapping.packSize.smallPackSize && (
+                          <div className="border border-slate-100 p-3.5 rounded-xl bg-white shadow-sm">
+                            <span className="font-black text-slate-900 flex items-center gap-1.5"><Box className="w-3.5 h-3.5 text-teal-600" /> {product.mapping.packSize.smallPackType || "Small Pack"}</span>
+                            <div className="mt-2 text-slate-500 space-y-1">
+                              <div className="flex justify-between"><span>Contains:</span><span className="font-bold text-slate-800">{product.mapping.packSize.smallContains}</span></div>
+                              <div className="flex justify-between"><span>SKU:</span><span className="font-mono text-slate-800">{product.mapping.packSize.smallSku || "N/A"}</span></div>
+                            </div>
+                          </div>
+                        )}
+                        {product.mapping.packSize.cartonPackSize && (
+                          <div className="border border-slate-100 p-3.5 rounded-xl bg-white shadow-sm">
+                            <span className="font-black text-slate-900 flex items-center gap-1.5"><Package className="w-3.5 h-3.5 text-teal-600" /> {product.mapping.packSize.cartonPackType || "Carton Pack"}</span>
+                            <div className="mt-2 text-slate-500 space-y-1">
+                              <div className="flex justify-between"><span>Size:</span><span className="font-bold text-slate-800">{product.mapping.packSize.cartonPackSize}</span></div>
+                              <div className="flex justify-between"><span>Contains:</span><span className="font-bold text-slate-800">{product.mapping.packSize.cartonContains}</span></div>
+                              <div className="flex justify-between"><span>SKU:</span><span className="font-mono text-slate-800">{product.mapping.packSize.cartonSku || "N/A"}</span></div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Technical Resource Documents */}
+                  {product.mapping?.media && (product.mapping.media.techSheetPdf || product.mapping.media.userManualPdf || product.mapping.media.brochurePdf) && (
+                    <div className="bg-card border rounded-2xl p-6 shadow-sm">
+                      <h3 className="text-xs font-black uppercase tracking-wider mb-4 text-slate-800">Resource Center</h3>
+                      <div className="space-y-3">
+                        {product.mapping.media.techSheetPdf && (
+                          <a 
+                            href={product.mapping.media.techSheetPdf} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-slate-100 transition text-xs font-bold text-slate-700"
+                          >
+                            <span>📄 Technical Specs Sheet</span>
+                            <span className="text-teal-600 uppercase tracking-widest text-[9px] font-black">Download</span>
+                          </a>
+                        )}
+                        {product.mapping.media.userManualPdf && (
+                          <a 
+                            href={product.mapping.media.userManualPdf} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-slate-100 transition text-xs font-bold text-slate-700"
+                          >
+                            <span>📘 User Manual (Guide)</span>
+                            <span className="text-teal-600 uppercase tracking-widest text-[9px] font-black">Download</span>
+                          </a>
+                        )}
+                        {product.mapping.media.brochurePdf && (
+                          <a 
+                            href={product.mapping.media.brochurePdf} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-slate-100 transition text-xs font-bold text-slate-700"
+                          >
+                            <span>📕 Product Brochure</span>
+                            <span className="text-teal-600 uppercase tracking-widest text-[9px] font-black">Download</span>
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                </div>
               </div>
             </TabsContent>
 

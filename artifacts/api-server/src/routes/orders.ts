@@ -166,7 +166,7 @@ router.post("/orders", requireAuth, async (req, res): Promise<void> => {
   }
 
   // ---------- SEND CONFIRMATION EMAIL (non‑blocking) ----------
-  if (user && user.email) {
+  if (user && user.email && process.env.SMTP_USER) {
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2>Order Confirmed ✅</h2>
@@ -180,17 +180,21 @@ router.post("/orders", requireAuth, async (req, res): Promise<void> => {
       </div>
     `;
 
-    transporter.sendMail({
-      from: `"Yelements" <${process.env.SMTP_USER}>`,
-      to: user.email,
-      bcc: "sampath777yt@gmail.com",
-      subject: `Order Confirmed - #${order.id}`,
-      html: emailHtml,
-    }).catch((err: any) => {
-      console.error(`Failed to send order confirmation email for order ${order.id}:`, err);
-    });
+    try {
+      transporter.sendMail({
+        from: `"Yelements" <${process.env.SMTP_USER}>`,
+        to: user.email,
+        bcc: "sampath777yt@gmail.com",
+        subject: `Order Confirmed - #${order.id}`,
+        html: emailHtml,
+      }).catch((err: any) => {
+        console.error(`Failed to send order confirmation email for order ${order.id}:`, err);
+      });
+    } catch (err: any) {
+      console.error(`Synchronous error sending order confirmation email for order ${order.id}:`, err);
+    }
   } else {
-    console.warn(`User ${userId} has no email – cannot send confirmation.`);
+    console.warn(`User ${userId} has no email or SMTP_USER configuration missing – cannot send confirmation.`);
   }
 
   res.status(201).json(formatOrder(order));

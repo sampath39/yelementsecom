@@ -249,12 +249,21 @@ export default function VendorDashboard() {
                 <p className="text-muted-foreground">Vendor Portal</p>
               </div>
             </div>
-            <Button
-              className="bg-accent text-accent-foreground hover:bg-accent/90"
-              onClick={openDialog}
-            >
-              <Plus className="w-4 h-4 mr-2" /> Add New Product
-            </Button>
+            <div className="flex flex-wrap gap-3">
+              <Button
+                variant="outline"
+                className="border-primary/20 hover:bg-primary/5 font-bold text-xs"
+                onClick={() => setLocation("/admin/mapping")}
+              >
+                🗺️ Catalog Mapping Workspace
+              </Button>
+              <Button
+                className="bg-accent text-accent-foreground hover:bg-accent/90 text-xs"
+                onClick={openDialog}
+              >
+                <Plus className="w-4 h-4 mr-2" /> Add New Product
+              </Button>
+            </div>
           </div>
         </div>
       </div>
