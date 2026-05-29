@@ -57,6 +57,7 @@ export default function AdminDashboard() {
       refetchInterval: 5000,
     }
   });
+  const statsAny = stats as any;
 
   const { data: allOrders, isLoading: loadingOrders } = useGetAllOrders({
     query: {
@@ -83,7 +84,7 @@ export default function AdminDashboard() {
 
   const handleUpdateStatus = (orderId: number, status: string) => {
     const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    const apiUrl = import.meta.env.VITE_API_URL || "";
     
     fetch(`${apiUrl}/api/orders/${orderId}/status`, {
       method: "PATCH",
@@ -115,7 +116,7 @@ export default function AdminDashboard() {
 
     setUpdatingUserId(userId);
     const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    const apiUrl = import.meta.env.VITE_API_URL || "";
     
     fetch(`${apiUrl}/api/users/${userId}`, {
       method: "PATCH",
@@ -165,12 +166,20 @@ export default function AdminDashboard() {
   return (
     <AppLayout>
       <div className="bg-emerald-50/50 py-8 px-4 lg:px-8 border-b border-emerald-100">
-        <div className="container mx-auto">
-          <div className="flex items-center gap-3 mb-2">
-            <ShieldAlert className="text-emerald-600 w-8 h-8" />
-            <h1 className="text-3xl font-bold tracking-tight text-slate-800">Admin Control Panel</h1>
+        <div className="container mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <ShieldAlert className="text-emerald-600 w-8 h-8" />
+              <h1 className="text-3xl font-bold tracking-tight text-slate-800">Admin Control Panel</h1>
+            </div>
+            <p className="text-slate-600">System overview and institutional supply management</p>
           </div>
-          <p className="text-slate-600">System overview and institutional supply management</p>
+          <Button 
+            className="bg-teal-600 text-white hover:bg-teal-700 font-bold self-start md:self-auto rounded-xl shadow hover:shadow-teal-500/20"
+            onClick={() => setLocation("/admin/mapping")}
+          >
+            Open Catalog Mapping Workspace ➔
+          </Button>
         </div>
       </div>
 
@@ -210,8 +219,8 @@ export default function AdminDashboard() {
                 <CardContent className="p-6 flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground mb-1">Daily Revenue</p>
-                    <h3 className="text-3xl font-bold text-foreground">{formatPrice(stats.dailyRevenue)}</h3>
-                    <p className="text-xs text-green-600 mt-1">{stats.dailyOrders} orders today</p>
+                    <h3 className="text-3xl font-bold text-foreground">{formatPrice(statsAny.dailyRevenue)}</h3>
+                    <p className="text-xs text-green-600 mt-1">{statsAny.dailyOrders} orders today</p>
                   </div>
                   <div className="w-12 h-12 bg-green-500/10 rounded-full flex items-center justify-center text-green-600">
                     <TrendingUp className="w-6 h-6" />
@@ -223,8 +232,8 @@ export default function AdminDashboard() {
                 <CardContent className="p-6 flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground mb-1">Monthly Revenue</p>
-                    <h3 className="text-3xl font-bold text-foreground">{formatPrice(stats.monthlyRevenue)}</h3>
-                    <p className="text-xs text-blue-600 mt-1">{stats.monthlyOrders} orders this month</p>
+                    <h3 className="text-3xl font-bold text-foreground">{formatPrice(statsAny.monthlyRevenue)}</h3>
+                    <p className="text-xs text-blue-600 mt-1">{statsAny.monthlyOrders} orders this month</p>
                   </div>
                   <div className="w-12 h-12 bg-indigo-500/10 rounded-full flex items-center justify-center text-indigo-600">
                     <Calendar className="w-6 h-6" />

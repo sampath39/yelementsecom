@@ -182,6 +182,7 @@ router.post("/razorpay/verify", requireAuth, async (req, res): Promise<void> => 
     ) - couponDiscount);
 
     // 📦 CREATE ORDER
+    const orderNumber = `ORD-${userId}-${Date.now()}`;
     const [order] = await db.insert(ordersTable).values({
       userId,
       items: validItems,
@@ -189,6 +190,7 @@ router.post("/razorpay/verify", requireAuth, async (req, res): Promise<void> => 
       status: "confirmed",
       shippingAddress: req.body.address || "Paid via Razorpay",
       paymentMethod: "razorpay",
+      orderNumber,
     }).returning();
 
     // 📧 SEND INVOICE EMAIL TO USER & ADMIN

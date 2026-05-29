@@ -61,6 +61,7 @@ async function enrichProduct(product: typeof productsTable.$inferSelect) {
     reviewCount,
     isFeatured: product.isFeatured,
     discount: product.discount ? Number(product.discount) : null,
+    mapping: product.mapping,
     createdAt: product.createdAt.toISOString(),
   };
 }
@@ -299,5 +300,45 @@ router.delete(
     res.json({ success: true, message: "Product deleted" });
   },
 );
+
+// ------------------ GET MAPPING WORKFLOW DATA ------------------
+router.get("/products/:id/mapping", async (req, res): Promise<void> => {
+  const id = Number(req.params.id);
+  if (isNaN(id)) {
+    res.status(400).json({ error: "Invalid product ID" });
+    return;
+  }
+  const [product] = await db
+    .select({ mapping: productsTable.mapping })
+    .from(productsTable)
+    .where(eq(productsTable.id, id));
+  if (!product) {
+    res.status(404).json({ error: "Product not found" });
+    return;
+  }
+  res.json({ success: true, data: product.mapping });
+});
+
+// ------------------ UPDATE MAPPING WORKFLOW DATA ------------------
+router.post("/products/:id/mapping", requireVendorOrAdmin, async (req, res): Promise<void> => {
+  const id = Number(req.params.id);
+  if (isNaN(id)) {
+    res.status(400).json({ error: "Invalid product ID" });
+    return;
+  }
+  
+  const [product] = await db
+    .update(productsTable)
+    .set({ mapping: req.body })
+    .where(eq(productsTable.id, id))
+    .returning();
+
+  if (!product) {
+    res.status(404).json({ error: "Product not found" });
+    return;
+  }
+
+  res.json({ success: true, message: "Catalog mapping updated", data: product.mapping });
+});
 
 export default router;

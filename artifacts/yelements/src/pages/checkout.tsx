@@ -42,7 +42,7 @@ export default function Checkout() {
       
       // Fetch cashback balance
       const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const apiUrl = import.meta.env.VITE_API_URL || "";
       fetch(`${apiUrl}/api/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -132,7 +132,7 @@ export default function Checkout() {
     // 💵 CASH ON DELIVERY (COD)
     if (data.paymentMethod === "cod") {
       const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+      const apiUrl = import.meta.env.VITE_API_URL || "";
       console.log("📦 Creating COD order to:", `${apiUrl}/api/orders`);
       
       fetch(`${apiUrl}/api/orders`, {
@@ -184,7 +184,7 @@ export default function Checkout() {
     // 💵 CASHBACK WALLET PAY
     if (data.paymentMethod === "cashback") {
       const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+      const apiUrl = import.meta.env.VITE_API_URL || "";
       fetch(`${apiUrl}/api/orders`, {
         method: "POST",
         headers: {

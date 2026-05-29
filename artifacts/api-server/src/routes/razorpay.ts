@@ -110,6 +110,7 @@ router.post("/verify", requireAuth, async (req, res): Promise<void> => {
     const shippingAddress = address || "Paid via Razorpay";
 
     // 5. Create order record
+    const orderNumber = `ORD-${userId}-${Date.now()}`;
     await db.insert(ordersTable).values({
       userId,
       items: validItems,
@@ -117,6 +118,7 @@ router.post("/verify", requireAuth, async (req, res): Promise<void> => {
       status: "confirmed",
       shippingAddress: shippingAddress,
       paymentMethod: "razorpay",
+      orderNumber,
     });
 
     // 6. Clear the cart

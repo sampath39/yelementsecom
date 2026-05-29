@@ -45,7 +45,7 @@ export default function Rewards() {
     if (!token) return;
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const apiUrl = import.meta.env.VITE_API_URL || "";
 
       // Fetch balance
       const balanceRes = await fetch(`${apiUrl}/api/rewards/balance`, {
@@ -86,7 +86,7 @@ export default function Rewards() {
     if (!token) return;
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const apiUrl = import.meta.env.VITE_API_URL || "";
       const res = await fetch(`${apiUrl}/api/rewards/checkin`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
@@ -109,7 +109,7 @@ export default function Rewards() {
     if (!token) return;
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const apiUrl = import.meta.env.VITE_API_URL || "";
       const res = await fetch(`${apiUrl}/api/rewards/spin`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },

@@ -111,6 +111,7 @@ router.post("/orders", requireAuth, async (req, res): Promise<void> => {
   const couponDiscount = Number(req.body.couponDiscount || 0);
   const finalTotal = Math.max(0, total - couponDiscount);
 
+  const orderNumber = `ORD-${userId}-${Date.now()}`;
   const insertValues: any = {
     userId,
     items: validItems,
@@ -119,6 +120,7 @@ router.post("/orders", requireAuth, async (req, res): Promise<void> => {
     paymentStatus: parsed.data.paymentMethod === "cod" ? "pending" : "paid",
     paymentMethod: parsed.data.paymentMethod,
     shippingAddress: parsed.data.shippingAddress,
+    orderNumber,
   };
   if ('otp' in ordersTable) insertValues.otp = otp;
 

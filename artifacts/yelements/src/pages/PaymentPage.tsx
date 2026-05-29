@@ -7,7 +7,7 @@ import {
   CardElement,
 } from "@stripe/react-stripe-js";
 
-const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+const apiUrl = import.meta.env.VITE_API_URL || "";
 
 const stripePromise = loadStripe("pk_test_51THmXTC1y0CkzpW1UArjnY36fSn4isPFYrIgKKuKAZvK89r2D8l4UZ4lJVQ3BamI5fKkoaij4IHQiPttJD9Yuwma003RHXoaVn");
 

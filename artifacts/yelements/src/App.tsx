@@ -18,6 +18,7 @@ import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
 import Dashboard from "@/pages/dashboard";
 import AdminDashboard from "@/pages/admin";
+import CatalogMappingWorkspace from "@/pages/admin-mapping";
 import VendorDashboard from "@/pages/vendor";
 import RazorpayPage from "@/pages/razorpaypage";
 import Tracking from "./pages/Tracking";
@@ -61,6 +62,7 @@ function Router() {
       <Route path="/register" component={Register} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin/mapping" component={CatalogMappingWorkspace} />
       <Route path="/vendor" component={VendorDashboard} />
       <Route path="/razorpay" component={RazorpayPage} />
       <Route path="/tracking" component={Tracking} />

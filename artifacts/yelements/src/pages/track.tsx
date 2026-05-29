@@ -8,7 +8,7 @@ export default function Track() {
   const id = new URLSearchParams(location.split("?")[1]).get("id");
 
   useEffect(() => {
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    const apiUrl = import.meta.env.VITE_API_URL || "";
     fetch(`${apiUrl}/api/orders`)
       .then(res => res.json())
       .then(data => {

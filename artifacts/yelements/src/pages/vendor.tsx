@@ -95,7 +95,7 @@ export default function VendorDashboard() {
     }
 
     const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const apiUrl = import.meta.env.VITE_API_URL || "";
 
     try {
       const res = await fetch(`${apiUrl}/api/orders/${orderId}/vendor-verify-otp`, {
@@ -128,7 +128,7 @@ export default function VendorDashboard() {
 
   const handleSendOTP = async (orderId: number) => {
     const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const apiUrl = import.meta.env.VITE_API_URL || "";
 
     try {
       const res = await fetch(`${apiUrl}/api/orders/${orderId}/send-otp`, {

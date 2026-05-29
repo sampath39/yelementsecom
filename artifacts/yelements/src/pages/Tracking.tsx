@@ -83,7 +83,7 @@ export default function Tracking() {
       return;
     }
 
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    const apiUrl = import.meta.env.VITE_API_URL || "";
     fetch(`${apiUrl}/api/orders/${orderId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -169,7 +169,7 @@ export default function Tracking() {
     setSimulating(true);
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+      const apiUrl = import.meta.env.VITE_API_URL || "";
       const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
 
       // Send coordinates matching the destination

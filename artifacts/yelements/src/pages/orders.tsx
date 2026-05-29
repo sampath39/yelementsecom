@@ -16,7 +16,7 @@ export default function Orders() {
 
   useEffect(() => {
     const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const apiUrl = import.meta.env.VITE_API_URL || "";
 
     fetch(`${apiUrl}/api/orders`, {
       headers: {

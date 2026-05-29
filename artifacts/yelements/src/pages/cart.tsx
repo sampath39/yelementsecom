@@ -56,7 +56,7 @@ export default function Cart() {
 
   const handleMoveToWishlist = (productId: number) => {
     const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    const apiUrl = import.meta.env.VITE_API_URL || "";
 
     fetch(`${apiUrl}/api/wishlist`, {
       method: "POST",

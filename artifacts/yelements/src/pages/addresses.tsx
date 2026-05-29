@@ -53,7 +53,7 @@ export default function Addresses() {
     if (!token) return;
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const apiUrl = import.meta.env.VITE_API_URL || "";
       const res = await fetch(`${apiUrl}/api/addresses`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -72,7 +72,7 @@ export default function Addresses() {
     if (!token) return;
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const apiUrl = import.meta.env.VITE_API_URL || "";
       const url = editingAddress 
         ? `${apiUrl}/api/addresses/${editingAddress.id}`
         : `${apiUrl}/api/addresses`;
@@ -135,7 +135,7 @@ export default function Addresses() {
     if (!confirm("Are you sure you want to delete this address?")) return;
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const apiUrl = import.meta.env.VITE_API_URL || "";
       const res = await fetch(`${apiUrl}/api/addresses/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
@@ -159,7 +159,7 @@ export default function Addresses() {
     if (!token) return;
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+      const apiUrl = import.meta.env.VITE_API_URL || "";
       const res = await fetch(`${apiUrl}/api/addresses/${id}`, {
         method: "PUT",
         headers: { 

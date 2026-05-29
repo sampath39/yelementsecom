@@ -32,7 +32,7 @@ export default function Wishlist() {
 
   const fetchWishlist = () => {
     const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    const apiUrl = import.meta.env.VITE_API_URL || "";
 
     fetch(`${apiUrl}/api/wishlist`, {
       headers: {
@@ -68,7 +68,7 @@ export default function Wishlist() {
 
   const handleRemove = (productId: number) => {
     const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    const apiUrl = import.meta.env.VITE_API_URL || "";
 
     fetch(`${apiUrl}/api/wishlist/${productId}`, {
       method: "DELETE",
@@ -92,7 +92,7 @@ export default function Wishlist() {
 
   const handleAddToCart = (productId: number) => {
     const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+    const apiUrl = import.meta.env.VITE_API_URL || "";
 
     fetch(`${apiUrl}/api/cart/items`, {
       method: "POST",

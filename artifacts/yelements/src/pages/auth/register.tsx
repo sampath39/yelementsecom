@@ -46,7 +46,7 @@ export default function Register() {
   const onSubmit = (data: RegisterFormValues) => {
     // Exclude confirmPassword for the API call
     const { confirmPassword, ...rest } = data;
-    const apiData = { ...rest, role: "user" };
+    const apiData = { ...rest, role: "user" as const };
     
     registerMutation.mutate({ data: apiData }, {
       onSuccess: (response) => {
