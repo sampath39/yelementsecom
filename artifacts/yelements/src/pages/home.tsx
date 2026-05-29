@@ -198,6 +198,46 @@ export default function Home() {
         </section>
       )}
 
+      {/* 💎 INSTITUTIONAL MAPPED CATALOGUE SECTION */}
+      <section className="py-12 bg-slate-900 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(20,184,166,0.1),transparent_50%)]" />
+        <div className="container mx-auto px-4 lg:px-8 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+            <div>
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-teal-500/10 text-teal-300 border border-teal-500/20 uppercase tracking-widest">
+                Institutional Quality
+              </span>
+              <h2 className="text-2xl md:text-3xl font-black mt-2 tracking-tight text-white flex items-center gap-2">
+                💎 Mapped B2B Catalogue
+              </h2>
+              <p className="text-slate-400 text-xs mt-1 max-w-xl">
+                Browse our verified products with complete multi-supplier rates, variant parameters, HSN/GST billing records, and technical sheet downloads.
+              </p>
+            </div>
+            <Button variant="outline" className="border-teal-500/30 text-teal-400 hover:bg-teal-500/10 font-bold self-start md:self-center" asChild>
+              <Link href="/products">Browse All Items</Link>
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {loadingFeatured
+              ? Array(5)
+                  .fill(0)
+                  .map((_, i) => (
+                    <Skeleton key={`mapped-${i}`} className="h-60 w-full bg-slate-800 rounded-2xl border border-slate-700" />
+                  ))
+              : Array.isArray(featuredProducts)
+                ? featuredProducts
+                    .filter((p: any) => p.mapping !== null && p.mapping !== undefined)
+                    .slice(0, 5)
+                    .map((product) => (
+                      <ProductCard key={`mapped-${product.id}`} product={product as any} />
+                    ))
+                : null}
+          </div>
+        </div>
+      </section>
+
       {/* ── FEATURED PRODUCTS ── */}
       <section className="py-12 bg-background">
         <div className="container mx-auto px-4 lg:px-8">

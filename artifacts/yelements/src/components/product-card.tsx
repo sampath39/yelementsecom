@@ -126,6 +126,11 @@ export function ProductCard({ product }: { product: SafeProduct }) {
 
           {/* IMAGE */}
           <div className="relative aspect-square flex items-center justify-center bg-slate-50 overflow-hidden border-b">
+            {(product as any).mapping && (
+              <div className="absolute top-3 left-3 z-10 bg-teal-500 text-white font-extrabold text-[9px] px-2.5 py-1 rounded-xl shadow border border-teal-455/20 uppercase tracking-widest flex items-center gap-1 select-none pointer-events-none">
+                <span>💎 B2B Mapped</span>
+              </div>
+            )}
             <img
               src={
                 !imgError && product.imageUrl 

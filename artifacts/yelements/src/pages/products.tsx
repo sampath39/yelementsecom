@@ -4,7 +4,7 @@ import { ProductCard } from "@/components/product-card";
 import { normalizeProducts, SafeProduct } from "@/lib/normalizeProduct";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState, useEffect, useRef } from "react";
-import { useLocation, useSearch } from "wouter";
+import { useLocation, useSearch, Link } from "wouter";
 
 // API response type
 interface ProductsResponse {
@@ -23,16 +23,18 @@ export default function Products() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const [categoryId, setCategoryId] = useState<number | undefined>();
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
   const [sort, setSort] = useState("");
 
   const loaderRef = useRef<HTMLDivElement | null>(null);
 
   const { data: categories } = useGetCategories();
 
-  // Parse category from URL supporting both numeric IDs and string slugs
+  // Parse category & subcategory from URL supporting both numeric IDs and string slugs
   useEffect(() => {
     const params = new URLSearchParams(searchString || "");
     const cat = params.get("category");
+    const sub = params.get("subcategory");
     if (!cat) {
       setCategoryId(undefined);
     } else if (!isNaN(Number(cat))) {
@@ -45,6 +47,7 @@ export default function Products() {
       );
       setCategoryId(found ? found.id : undefined);
     }
+    setSelectedSubcategory(sub || null);
     setProducts([]);
     setPage(1);
     setHasMore(true);
@@ -58,13 +61,14 @@ export default function Products() {
     {
       categoryId,
       category: !categoryId ? rawCategorySlug : undefined,
+      subcategory: selectedSubcategory || undefined,
       limit: 8,
       page,
       sort: sort || undefined,
     } as any,
     {
       query: {
-        queryKey: ["products", categoryId, rawCategorySlug, page, sort],
+        queryKey: ["products", categoryId, rawCategorySlug, selectedSubcategory, page, sort],
       },
     }
   ) as { data: ProductsResponse | undefined; isLoading: boolean };
@@ -136,55 +140,239 @@ export default function Products() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-6">
-        {/* Sort dropdown */}
-        <div className="mb-4">
-          <select
-            value={sort}
-            onChange={(e) => {
-              setSort(e.target.value);
-              setPage(1);
-              setProducts([]);
-            }}
-            className="border p-2 rounded"
-          >
-            <option value="">Sort</option>
-            <option value="price_low">Price: Low → High</option>
-            <option value="price_high">Price: High → Low</option>
-          </select>
+      <div className="container mx-auto px-4 py-6 flex flex-col lg:flex-row gap-8">
+        
+        {/* Mobile/Tablet Category Picker (Horizontal scroll) */}
+        <div className="lg:hidden space-y-4">
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+            <button
+              onClick={() => {
+                setCategoryId(undefined);
+                setSelectedSubcategory(null);
+                setPage(1);
+                setProducts([]);
+              }}
+              className={`px-4 py-2.5 rounded-full text-xs font-bold shrink-0 transition-all duration-300 ${
+                categoryId === undefined
+                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10"
+                  : "bg-slate-50 border border-slate-100 text-slate-700 hover:bg-slate-100"
+              }`}
+            >
+              All Products 📦
+            </button>
+            {categories?.map((cat) => {
+              const isSelected = categoryId === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => {
+                    setCategoryId(cat.id);
+                    setSelectedSubcategory(null);
+                    setPage(1);
+                    setProducts([]);
+                  }}
+                  className={`px-4 py-2.5 rounded-full text-xs font-bold shrink-0 transition-all duration-300 flex items-center gap-1.5 ${
+                    isSelected
+                      ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10"
+                      : "bg-slate-50 border border-slate-100 text-slate-700 hover:bg-slate-100"
+                  }`}
+                >
+                  <span>{(cat as any).icon || "📁"}</span>
+                  <span>{cat.name}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Mobile subcategories */}
+          {categoryId !== undefined && (() => {
+            const activeCat = categories?.find((c) => c.id === categoryId);
+            const subcats = activeCat?.subcategories || [];
+            if (subcats.length === 0) return null;
+            return (
+              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none animate-in fade-in slide-in-from-top-1 duration-200">
+                {subcats.map((sub) => {
+                  const isSubSelected = selectedSubcategory === sub;
+                  return (
+                    <button
+                      key={sub}
+                      onClick={() => {
+                        setSelectedSubcategory(isSubSelected ? null : sub);
+                        setPage(1);
+                        setProducts([]);
+                      }}
+                      className={`px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition-all duration-200 flex items-center gap-1 ${
+                        isSubSelected
+                          ? "bg-teal-600 text-white shadow-md shadow-teal-600/10"
+                          : "bg-white border border-slate-100 text-slate-650 hover:bg-slate-50"
+                      }`}
+                    >
+                      <span>{sub}</span>
+                      {isSubSelected && <span>✓</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            );
+          })()}
         </div>
 
-        {/* Products grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {products.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
+        {/* Desktop Sidebar (Left side) */}
+        <div className="hidden lg:block w-64 shrink-0 bg-white border border-slate-100 p-5 rounded-3xl shadow-sm h-fit space-y-5">
+          <div>
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+              <span className="text-xs font-black uppercase tracking-widest text-slate-400">Directories</span>
+              <button 
+                onClick={() => {
+                  setCategoryId(undefined);
+                  setSelectedSubcategory(null);
+                  setPage(1);
+                  setProducts([]);
+                }}
+                className="text-[10px] text-indigo-600 hover:text-indigo-800 font-black uppercase tracking-wider"
+              >
+                Clear All
+              </button>
+            </div>
+            
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={() => {
+                  setCategoryId(undefined);
+                  setSelectedSubcategory(null);
+                  setPage(1);
+                  setProducts([]);
+                }}
+                className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-between ${
+                  categoryId === undefined
+                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10 scale-[1.02]"
+                    : "bg-slate-50 border border-slate-100 text-slate-700 hover:bg-slate-100"
+                }`}
+              >
+                <span>All Products</span>
+                <span>📦</span>
+              </button>
+
+              {categories?.map((cat) => {
+                const isSelected = categoryId === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => {
+                      setCategoryId(cat.id);
+                      setSelectedSubcategory(null);
+                      setPage(1);
+                      setProducts([]);
+                    }}
+                    className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-between ${
+                      isSelected
+                        ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10 scale-[1.02]"
+                        : "bg-slate-50 border border-slate-100 text-slate-700 hover:bg-slate-100"
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span>{(cat as any).icon || "📁"}</span>
+                      <span>{cat.name}</span>
+                    </span>
+                    <span className="opacity-60 font-mono text-[9px] font-bold">➔</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Desktop Subcategories */}
+          {categoryId !== undefined && (() => {
+            const activeCat = categories?.find((c) => c.id === categoryId);
+            const subcats = activeCat?.subcategories || [];
+            if (subcats.length === 0) return null;
+            return (
+              <div className="pt-4 border-t border-slate-100 space-y-3">
+                <span className="text-xs font-black uppercase tracking-widest text-slate-400 block">Subcategories</span>
+                <div className="flex flex-col gap-1.5">
+                  {subcats.map((sub) => {
+                    const isSubSelected = selectedSubcategory === sub;
+                    return (
+                      <button
+                        key={sub}
+                        onClick={() => {
+                          setSelectedSubcategory(isSubSelected ? null : sub);
+                          setPage(1);
+                          setProducts([]);
+                        }}
+                        className={`w-full text-left px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-between ${
+                          isSubSelected
+                            ? "bg-teal-600 text-white shadow-md shadow-teal-600/10 scale-[1.01]"
+                            : "bg-slate-50 border border-slate-100 text-slate-600 hover:bg-slate-100"
+                        }`}
+                      >
+                        <span>{sub}</span>
+                        {isSubSelected && <span className="text-[10px] font-bold">✓</span>}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
         </div>
 
-        {/* Skeleton loader */}
-        {isLoading && page === 1 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-            {Array(8)
-              .fill(0)
-              .map((_, i) => (
-                <Skeleton key={i} className="h-48 w-full rounded-xl" />
-              ))}
+        {/* Product Grid & Controls Area */}
+        <div className="flex-1 space-y-6">
+          {/* Controls Bar */}
+          <div className="flex justify-between items-center bg-white border border-slate-100 px-4 py-3 rounded-2xl shadow-sm">
+            <span className="text-xs font-bold text-slate-500">
+              Showing {products.length} B2B Catalogue items
+            </span>
+            <select
+              value={sort}
+              onChange={(e) => {
+                setSort(e.target.value);
+                setPage(1);
+                setProducts([]);
+              }}
+              className="border border-slate-200 bg-white p-2 rounded-xl text-xs font-bold outline-none cursor-pointer hover:border-slate-300 transition"
+            >
+              <option value="">Default Sorting</option>
+              <option value="price_low">Price: Low → High</option>
+              <option value="price_high">Price: High → Low</option>
+            </select>
           </div>
-        )}
 
-        {/* Infinite scroll spinner */}
-        {hasMore && (
-          <div ref={loaderRef} className="flex justify-center py-6">
-            <div className="animate-spin h-6 w-6 border-b-2 border-green-600" />
+          {/* Products grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {products.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
           </div>
-        )}
 
-        {/* Empty state */}
-        {!isLoading && products.length === 0 && (
-          <p className="text-center mt-10 text-gray-500">
-            No products found
-          </p>
-        )}
+          {/* Skeleton loader */}
+          {isLoading && page === 1 && (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+              {Array(6)
+                .fill(0)
+                .map((_, i) => (
+                  <Skeleton key={i} className="h-48 w-full rounded-2xl" />
+                ))}
+            </div>
+          )}
+
+          {/* Infinite scroll spinner */}
+          {hasMore && (
+            <div ref={loaderRef} className="flex justify-center py-6">
+              <div className="animate-spin h-6 w-6 border-b-2 border-green-600" />
+            </div>
+          )}
+
+          {/* Empty state */}
+          {!isLoading && products.length === 0 && (
+            <div className="text-center py-16 bg-slate-50 border border-dashed rounded-3xl max-w-sm mx-auto space-y-3">
+              <span className="text-2xl">📦</span>
+              <p className="text-sm font-bold text-slate-800">No products found in this directory</p>
+              <p className="text-xs text-slate-500">Try choosing a different directory or category path.</p>
+            </div>
+          )}
+        </div>
       </div>
     </AppLayout>
   );

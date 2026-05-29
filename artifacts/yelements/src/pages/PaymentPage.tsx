@@ -27,9 +27,10 @@ function CheckoutForm() {
   // ✅ FETCH CART TOTAL
   useEffect(() => {
     async function fetchCart() {
+      const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
       const res = await fetch(`${apiUrl}/api/cart`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
       const data = await res.json();
@@ -46,6 +47,8 @@ function CheckoutForm() {
     setLoading(true);
 
     try {
+      const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
+      
       // ✅ CREATE PAYMENT INTENT
       const res = await fetch(
         `${apiUrl}/api/payment/create-payment-intent`,
@@ -53,7 +56,7 @@ function CheckoutForm() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ amount }),
         }
@@ -79,7 +82,7 @@ function CheckoutForm() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           shippingAddress: address,

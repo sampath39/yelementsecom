@@ -476,7 +476,19 @@ export default function AdminDashboard() {
                         allOrders.slice(0, 10).map(order => (
                           <tr key={order.id} className="hover:bg-muted/30 transition-colors">
                             <td className="px-6 py-4 font-medium">#YEL-{order.id.toString().padStart(6, '0')}</td>
-                            <td className="px-6 py-4">{order.userName}</td>
+                            <td className="px-6 py-4">
+                              <div>
+                                <p className="font-semibold text-slate-800">{order.userName}</p>
+                                <div className="text-[10px] text-muted-foreground mt-1 space-y-0.5 max-w-[200px]">
+                                  {order.items?.map((item: any, idx: number) => (
+                                    <div key={idx} className="flex justify-between gap-2 border-b border-slate-50 last:border-b-0 py-0.5">
+                                      <span className="truncate">{item.name}</span>
+                                      <span className="font-bold shrink-0">x{item.quantity}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </td>
                             <td className="px-6 py-4">{new Date(order.createdAt).toLocaleDateString()}</td>
                             <td className="px-6 py-4 font-semibold">{formatPrice(order.total)}</td>
                             <td className="px-6 py-4">{getStatusBadge(order.status)}</td>

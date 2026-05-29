@@ -58,6 +58,7 @@ const addProductSchema = z.object({
   brand: z.string().min(1, "Brand is required"),
   imageUrl: z.string().url("Please enter a valid image URL"),
   categoryId: z.coerce.number().min(1, "Please select a category"),
+  subcategory: z.string().optional(),
   description: z.string().min(10, "Description must be at least 10 characters"),
   stock: z.coerce.number().int().min(0, "Stock cannot be negative"),
 }).refine(data => {
@@ -169,6 +170,7 @@ export default function VendorDashboard() {
       brand: "",
       imageUrl: "",
       categoryId: 0,
+      subcategory: "",
       description: "",
       stock: 0,
     },
@@ -191,6 +193,7 @@ export default function VendorDashboard() {
           originalPrice: values.showMRP ? values.originalPrice : undefined,
           description: fullDescription,
           categoryId: values.categoryId,
+          subcategory: values.subcategory || undefined,
           imageUrl: values.imageUrl,
           images: [values.imageUrl],
           stock: values.stock,
@@ -585,31 +588,100 @@ export default function VendorDashboard() {
                 )}
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="category">
-                  Category <span className="text-destructive">*</span>
-                </Label>
-                <Select
-                  onValueChange={(val) =>
-                    form.setValue("categoryId", Number(val))
-                  }
-                  defaultValue=""
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories?.map((cat) => (
-                      <SelectItem key={cat.id} value={String(cat.id)}>
-                        {cat.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {form.formState.errors.categoryId && (
-                  <p className="text-sm text-destructive">
-                    {form.formState.errors.categoryId.message}
-                  </p>
+              <div className="md:col-span-2 space-y-4 border p-4 rounded-2xl bg-slate-50/50 border-slate-100">
+                <div>
+                  <Label className="text-sm font-extrabold text-slate-800 flex items-center gap-1.5 mb-2.5">
+                    📁 Select Product Category <span className="text-destructive">*</span>
+                  </Label>
+                  
+                  {/* Category Grid Cards */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {categories?.map((cat) => {
+                      // Custom dynamic styling colors for each category
+                      const categoryThemes: Record<string, { bg: string, text: string, border: string, activeBg: string, activeBorder: string, iconBg: string }> = {
+                        Stationery: { bg: "hover:bg-blue-50/40 hover:border-blue-200", text: "text-blue-700", border: "border-slate-100", activeBg: "bg-blue-50/70 border-blue-500 ring-2 ring-blue-500/10", activeBorder: "border-blue-500", iconBg: "bg-blue-100/80" },
+                        Medical: { bg: "hover:bg-red-50/40 hover:border-red-200", text: "text-red-700", border: "border-slate-100", activeBg: "bg-red-50/70 border-red-500 ring-2 ring-red-500/10", activeBorder: "border-red-500", iconBg: "bg-red-100/80" },
+                        Laboratory: { bg: "hover:bg-purple-50/40 hover:border-purple-200", text: "text-purple-700", border: "border-slate-100", activeBg: "bg-purple-50/70 border-purple-500 ring-2 ring-purple-500/10", activeBorder: "border-purple-500", iconBg: "bg-purple-100/80" },
+                        Surgical: { bg: "hover:bg-orange-50/40 hover:border-orange-200", text: "text-orange-700", border: "border-slate-100", activeBg: "bg-orange-50/70 border-orange-500 ring-2 ring-orange-500/10", activeBorder: "border-orange-500", iconBg: "bg-orange-100/80" },
+                        Canteen: { bg: "hover:bg-yellow-50/40 hover:border-yellow-200", text: "text-yellow-700", border: "border-slate-100", activeBg: "bg-yellow-50/70 border-yellow-500 ring-2 ring-yellow-500/10", activeBorder: "border-yellow-500", iconBg: "bg-yellow-100/80" },
+                        Housekeeping: { bg: "hover:bg-teal-50/40 hover:border-teal-200", text: "text-teal-700", border: "border-slate-100", activeBg: "bg-teal-50/70 border-teal-500 ring-2 ring-teal-500/10", activeBorder: "border-teal-500", iconBg: "bg-teal-100/80" },
+                        Miscellaneous: { bg: "hover:bg-gray-50/40 hover:border-gray-200", text: "text-gray-700", border: "border-slate-100", activeBg: "bg-gray-100/70 border-gray-500 ring-2 ring-gray-500/10", activeBorder: "border-gray-500", iconBg: "bg-gray-200/80" },
+                      };
+                      
+                      const theme = categoryThemes[cat.name] || { bg: "hover:bg-slate-150 hover:border-slate-200", text: "text-slate-700", border: "border-slate-100", activeBg: "bg-slate-100 border-slate-500 ring-2 ring-slate-500/10", activeBorder: "border-slate-500", iconBg: "bg-slate-200/80" };
+                      const isSelected = form.watch("categoryId") === cat.id;
+                      
+                      return (
+                        <button
+                          key={cat.id}
+                          type="button"
+                          onClick={() => {
+                            form.setValue("categoryId", cat.id);
+                            form.setValue("subcategory", ""); // Reset subcategory when category changes
+                          }}
+                          className={`flex flex-col items-center justify-center p-3.5 rounded-2xl border text-center transition-all duration-300 gap-1.5 bg-white ${
+                            isSelected ? theme.activeBg : `border-slate-100 ${theme.bg}`
+                          }`}
+                        >
+                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-lg ${theme.iconBg}`}>
+                            {(cat as any).icon || "📦"}
+                          </div>
+                          <span className={`text-[11px] font-black tracking-tight ${isSelected ? theme.text : "text-slate-600"}`}>
+                            {cat.name}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {form.formState.errors.categoryId && (
+                    <p className="text-sm text-destructive mt-1.5">
+                      {form.formState.errors.categoryId.message}
+                    </p>
+                  )}
+                </div>
+
+                {/* Subcategories selector */}
+                {form.watch("categoryId") > 0 && (
+                  <div className="pt-3.5 border-t border-slate-100 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <Label className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-2.5">
+                      🏷️ Choose Subcategory (Optional)
+                    </Label>
+                    
+                    {(() => {
+                      const selectedCatId = form.watch("categoryId");
+                      const selectedCatObj = categories?.find(c => c.id === selectedCatId);
+                      const subcategories = selectedCatObj?.subcategories || [];
+                      
+                      if (subcategories.length === 0) {
+                        return <p className="text-xs text-muted-foreground italic">No subcategories listed for this category.</p>;
+                      }
+                      
+                      const selectedSub = form.watch("subcategory");
+                      
+                      return (
+                        <div className="flex flex-wrap gap-2">
+                          {subcategories.map((sub) => {
+                            const isSubSelected = selectedSub === sub;
+                            return (
+                              <button
+                                key={sub}
+                                type="button"
+                                onClick={() => form.setValue("subcategory", isSubSelected ? "" : sub)}
+                                className={`text-xs font-bold px-3 py-1.5 rounded-xl border transition-all duration-200 flex items-center gap-1.5 ${
+                                  isSubSelected
+                                    ? "bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-600/10 scale-[1.02]"
+                                    : "bg-white border-slate-100 hover:border-slate-300 text-slate-600 hover:bg-slate-50"
+                                }`}
+                              >
+                                {isSubSelected && <span>✓</span>}
+                                <span>{sub}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
+                  </div>
                 )}
               </div>
 

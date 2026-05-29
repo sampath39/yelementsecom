@@ -100,6 +100,31 @@ export default function Orders() {
                 <div className="text-xs text-slate-400">
                   Ordered on {new Date(o.createdAt).toLocaleDateString("en-IN", { day: 'numeric', month: 'long', year: 'numeric' })}
                 </div>
+
+                {/* 📦 Order Items List */}
+                <div className="mt-3 space-y-2 border-t border-slate-100 pt-3">
+                  <span className="text-[10px] uppercase font-black tracking-widest text-slate-400">Order Items</span>
+                  <div className="space-y-1.5">
+                    {o.items?.map((item: any, idx: number) => (
+                      <div key={idx} className="flex items-center justify-between text-xs bg-slate-50/50 p-2.5 rounded-xl border border-slate-100/50 gap-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded border bg-white overflow-hidden shrink-0 flex items-center justify-center">
+                            {item.imageUrl ? (
+                              <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <span className="text-[10px]">📦</span>
+                            )}
+                          </div>
+                          <div>
+                            <span className="font-bold text-slate-800 line-clamp-1">{item.name}</span>
+                            <span className="text-slate-400 text-[10px]">Qty: {item.quantity}</span>
+                          </div>
+                        </div>
+                        <span className="font-black text-slate-700 whitespace-nowrap">{formatINR(item.price * item.quantity)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
                 
                 {/* 🚚 Live Order Tracking Progress */}
                 <div className="mt-4 flex items-center gap-2 text-[10px] font-semibold text-slate-500 overflow-x-auto pb-2">

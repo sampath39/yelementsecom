@@ -89,18 +89,59 @@ export default function CategoryDetail() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 flex gap-8">
+      <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
         {/* Sidebar */}
-        <div className="w-64">
-          <button onClick={() => setSelectedSubcategory(null)}>
-            All
-          </button>
-
-          {category.subcategories?.map((sub) => (
-            <button key={sub} onClick={() => setSelectedSubcategory(sub)}>
-              {sub}
+        <div className="w-full md:w-64 shrink-0 bg-white border border-slate-100 p-5 rounded-3xl shadow-sm h-fit space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <span className="text-xs font-black uppercase tracking-widest text-slate-400">Subcategories</span>
+            <span className="text-[10px] font-bold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full">
+              {category.subcategories?.length || 0} Listed
+            </span>
+          </div>
+          
+          <div className="flex flex-col gap-2">
+            <button 
+              onClick={() => setSelectedSubcategory(null)}
+              className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-between ${
+                selectedSubcategory === null 
+                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10 scale-[1.02]" 
+                  : "bg-slate-50 border border-slate-100 text-slate-700 hover:bg-slate-100 hover:border-slate-300"
+              }`}
+            >
+              <span>All Products</span>
+              <span>📦</span>
             </button>
-          ))}
+
+            {category.subcategories?.map((sub) => (
+              <button 
+                key={sub} 
+                onClick={() => setSelectedSubcategory(sub)}
+                className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-between ${
+                  selectedSubcategory === sub 
+                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10 scale-[1.02]" 
+                    : "bg-slate-50 border border-slate-100 text-slate-700 hover:bg-slate-100 hover:border-slate-300"
+                }`}
+              >
+                <span>{sub}</span>
+                <span className="opacity-60 font-mono text-[9px] font-bold">➔</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Switch Directory */}
+          <div className="pt-4 border-t border-slate-100 space-y-2.5">
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-2">Switch Directory</span>
+            <div className="flex flex-col gap-2">
+              <Link href="/products" className="text-xs font-bold text-indigo-650 hover:text-indigo-800 flex items-center justify-between">
+                <span>All Products</span>
+                <span>📦</span>
+              </Link>
+              <Link href="/categories" className="text-xs font-bold text-slate-500 hover:text-indigo-600 flex items-center justify-between">
+                <span>All Directories</span>
+                <span>➔</span>
+              </Link>
+            </div>
+          </div>
         </div>
 
         {/* Products */}
