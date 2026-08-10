@@ -610,18 +610,26 @@ export default function CatalogMappingWorkspace() {
                           </div>
                         </div>
 
-                        <div className="border-t pt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div className="space-y-1">
-                            <Label>Technical Sheet PDF URL</Label>
-                            <Input placeholder="Link to Technical PDF" value={media.techSheetPdf} onChange={(e) => setMedia({ ...media, techSheetPdf: e.target.value })} />
+                        <div className="border-t pt-4 space-y-3">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-bold text-slate-700 flex items-center gap-2">
+                              📄 Product Documents (PDFs) <Badge variant="outline" className="text-[10px] text-teal-700 bg-teal-50 border-teal-200">COMPLETELY OPTIONAL ✨</Badge>
+                            </Label>
+                            <span className="text-[10px] text-slate-400">Leave blank if no PDFs available</span>
                           </div>
-                          <div className="space-y-1">
-                            <Label>User Manual PDF URL</Label>
-                            <Input placeholder="Link to Manual PDF" value={media.userManualPdf} onChange={(e) => setMedia({ ...media, userManualPdf: e.target.value })} />
-                          </div>
-                          <div className="space-y-1">
-                            <Label>Brochure PDF URL</Label>
-                            <Input placeholder="Link to Brochure PDF" value={media.brochurePdf} onChange={(e) => setMedia({ ...media, brochurePdf: e.target.value })} />
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="space-y-1">
+                              <Label className="text-xs text-slate-600">Technical Sheet PDF URL <span className="text-[10px] text-slate-400">(Optional)</span></Label>
+                              <Input placeholder="Link to Technical PDF (Optional)" value={media.techSheetPdf} onChange={(e) => setMedia({ ...media, techSheetPdf: e.target.value })} />
+                            </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs text-slate-600">User Manual PDF URL <span className="text-[10px] text-slate-400">(Optional)</span></Label>
+                              <Input placeholder="Link to Manual PDF (Optional)" value={media.userManualPdf} onChange={(e) => setMedia({ ...media, userManualPdf: e.target.value })} />
+                            </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs text-slate-600">Brochure PDF URL <span className="text-[10px] text-slate-400">(Optional)</span></Label>
+                              <Input placeholder="Link to Brochure PDF (Optional)" value={media.brochurePdf} onChange={(e) => setMedia({ ...media, brochurePdf: e.target.value })} />
+                            </div>
                           </div>
                         </div>
                       </div>
