@@ -396,46 +396,54 @@ export default function CatalogMappingWorkspace() {
                           {isDone ? "✓" : stepNum}
                         </div>
                         <span className="text-[9px] uppercase tracking-wider hidden md:inline">
-                          {["Master", "Attributes", "Taxonomy", "Images", "Variants", "Packs", "Similars", "Suppliers", "Search", "ERP"][i]}
+                          {["1.Master*", "2.Attrs", "3.Taxonomy*", "4.Media*", "5.Variants", "6.Packs", "7.Similars", "8.Suppliers", "9.Search", "10.ERP"][i]}
                         </span>
                       </button>
                     );
                   })}
                 </div>
 
-                {/* Step Title Header */}
+                {/* Step Title Header with Required / Optional Indicators */}
                 <div className="flex items-center justify-between bg-teal-50/50 border border-teal-100 p-5 rounded-2xl">
                   <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Badge className={`text-[10px] font-bold ${[1,3,4].includes(activeStep) ? "bg-amber-600 text-white" : "bg-teal-100 text-teal-800"}`}>
+                        {[1,3,4].includes(activeStep) ? "REQUIRED STEP ⚡" : "OPTIONAL STEP ✨"}
+                      </Badge>
+                      <span className="text-[11px] text-teal-800 font-semibold">
+                        {[1,3,4].includes(activeStep) ? "Essential for live storefront listing" : "Enhances product page, search ranking & corporate buyer B2B details"}
+                      </span>
+                    </div>
                     <h2 className="text-lg font-black text-teal-950 flex items-center gap-2">
                       <Layers className="w-5 h-5 text-teal-600" />
                       Step {activeStep}: {
                         [
-                          "Product Master Creation",
-                          "Attribute Mapping",
-                          "Category Taxonomy Mapping",
-                          "Image + Description Mapping",
-                          "Variant Mapping",
-                          "Pack Size Mapping (Small Pack & Carton)",
-                          "Similar Items Mapping",
-                          "Supplier Mapping (Multi Supplier)",
-                          "Search & Keyword Mapping",
-                          "ERP / Inventory Integration"
+                          "Product Master Registry & Pricing",
+                          "Category Attribute Specifications",
+                          "Category & Subcategory Taxonomy Tree",
+                          "Photos, Description & PDF Downloads",
+                          "Product Variants (Size, Color, Power)",
+                          "Packaging Options (Inner Packs & Cartons)",
+                          "Similar & Frequently Bought Products",
+                          "Multi-Supplier Wholesale & Reorder Stock",
+                          "Search Engine Keywords & AI Synonyms",
+                          "ERP Telemetry & Live Inventory Sync"
                         ][activeStep - 1]
                       }
                     </h2>
                     <p className="text-xs text-teal-800/80 mt-0.5">
                       {
                         [
-                          "Establish the internal unique Product Master registry details",
-                          "Match standard features to category attributes for comparison",
-                          "Associate the product structure into taxonomy hierarchies",
-                          "Define asset links, descriptions, technical specification PDFs",
-                          "Setup variants size, color, SKU linked to parent product",
-                          "Configure carton packaging values to align stock counting",
-                          "Establish comparable similar items for corporate clients",
-                          "Input multi-supplier pricing, lead times, and trust seals",
-                          "Input tags, synonyms, and search keywords for AI Semantic search",
-                          "Verify synchronization telemetry logs with ERP inventory"
+                          "Configures internal SKU, HSN tax code, selling unit & base price visible on product card",
+                          "Defines filterable specs (Material, Warranty, Power) displayed in Product Details table",
+                          "Places product into navigation menus & category page filters for customer browsing",
+                          "Uploads main product photos, descriptions & downloadable Technical PDFs for customers",
+                          "Links child size/color variants with live price chips on customer detail view",
+                          "Defines pack sizes (Box of 10, Carton of 100) for bulk buyers & institutional stock",
+                          "Links related products shown under 'Customers Also Viewed' recommendations",
+                          "Tracks wholesale supplier purchase cost & reorder lead times for vendor management",
+                          "Enables AI semantic search, typos, and customer search bar matches",
+                          "Monitors real-time API sync between store inventory and warehouse ERP"
                         ][activeStep - 1]
                       }
                     </p>
