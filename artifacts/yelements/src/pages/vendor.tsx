@@ -940,75 +940,6 @@ export default function VendorDashboard() {
                 )}
               </div>
 
-              {/* Step 4 — PDF Document Uploads */}
-              <div className="md:col-span-2 space-y-2 border p-4 rounded-xl bg-slate-50 border-slate-200">
-                <Label className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
-                  📄 Product Document Uploads (PDF) <span className="text-xs font-normal text-muted-foreground">(Optional)</span>
-                </Label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-                  <div className="p-3 border rounded-lg bg-white text-center">
-                    <span className="text-xs font-semibold block mb-1">Technical Sheet</span>
-                    <label className="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-1 px-3 rounded cursor-pointer inline-block border">
-                      📁 Upload PDF
-                      <input type="file" accept=".pdf" className="hidden" onChange={() => toast.success("Technical Sheet PDF attached!")} />
-                    </label>
-                  </div>
-                  <div className="p-3 border rounded-lg bg-white text-center">
-                    <span className="text-xs font-semibold block mb-1">User Manual</span>
-                    <label className="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-1 px-3 rounded cursor-pointer inline-block border">
-                      📁 Upload PDF
-                      <input type="file" accept=".pdf" className="hidden" onChange={() => toast.success("User Manual PDF attached!")} />
-                    </label>
-                  </div>
-                  <div className="p-3 border rounded-lg bg-white text-center">
-                    <span className="text-xs font-semibold block mb-1">Brochure</span>
-                    <label className="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-1 px-3 rounded cursor-pointer inline-block border">
-                      📁 Upload PDF
-                      <input type="file" accept=".pdf" className="hidden" onChange={() => toast.success("Brochure PDF attached!")} />
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              {/* Step 5 — Multiple Variants */}
-              <div className="md:col-span-2 space-y-2 border p-4 rounded-xl bg-slate-50 border-slate-200">
-                <Label className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
-                  🎨 Step 5 — Product Variants (Size, Color, Capacity, Pack)
-                </Label>
-                <div className="flex gap-2">
-                  <Input placeholder="Variant Type (e.g. Size)" className="text-xs" />
-                  <Input placeholder="Variant Value (e.g. XL, 500ml)" className="text-xs" />
-                  <Button type="button" size="sm" variant="outline" onClick={() => toast.success("Variant added!")}>+ Add Variant</Button>
-                </div>
-              </div>
-
-              {/* Step 6 — Multiple Packaging Options */}
-              <div className="md:col-span-2 space-y-2 border p-4 rounded-xl bg-slate-50 border-slate-200">
-                <Label className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
-                  📦 Step 6 — Packaging Options (Pack Sizes & Bundles)
-                </Label>
-                <div className="flex gap-2">
-                  <Input placeholder="Pack Size (e.g. Pack of 10, Box of 50)" className="text-xs" />
-                  <Input type="number" placeholder="Pack Price (₹)" className="text-xs" />
-                  <Button type="button" size="sm" variant="outline" onClick={() => toast.success("Packaging option added!")}>+ Add Option</Button>
-                </div>
-              </div>
-
-              {/* Step 8 — Supplier Details & Inventory Clarification */}
-              <div className="md:col-span-2 space-y-2 border p-4 rounded-xl bg-amber-50/50 border-amber-200">
-                <Label className="text-xs font-bold text-amber-900 block">
-                  💡 Step 8 — Supplier Details & Stock Clarification
-                </Label>
-                <p className="text-[11px] text-amber-800 leading-snug">
-                  • <strong>Wholesale Cost</strong>: Purchase cost paid to the supplier per unit.<br />
-                  • <strong>Supplier Stock</strong>: Stock available at the supplier’s warehouse for re-ordering (distinct from Our Store Stock).
-                </p>
-                <div className="grid grid-cols-2 gap-2 pt-1">
-                  <Input placeholder="Wholesale Cost (Cost Price ₹)" type="number" className="text-xs bg-white" />
-                  <Input placeholder="Supplier's Available Stock (Qty)" type="number" className="text-xs bg-white" />
-                </div>
-              </div>
-
               <div className="md:col-span-2 space-y-1.5">
                 <Label htmlFor="description">
                   Description <span className="text-destructive">*</span>
@@ -1024,6 +955,13 @@ export default function VendorDashboard() {
                     {form.formState.errors.description.message}
                   </p>
                 )}
+              </div>
+
+              {/* Informative Banner guiding vendor to Catalog Mapping Workspace for advanced institutional options */}
+              <div className="md:col-span-2 p-3 bg-teal-50 border border-teal-200 rounded-xl text-center">
+                <p className="text-xs text-teal-900 font-medium">
+                  ✨ <strong>Need Advanced Catalog Mapping?</strong> Configure PDF technical sheets, multi-variants, packaging cartons & multi-supplier pricing in the <button type="button" onClick={() => { setShowAddProduct(false); setLocation("/admin/mapping"); }} className="underline font-bold text-teal-700 hover:text-teal-950">Catalog Mapping Workspace 🗺️</button>.
+                </p>
               </div>
             </div>
 
