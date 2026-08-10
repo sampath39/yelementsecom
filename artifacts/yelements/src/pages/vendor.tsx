@@ -748,20 +748,56 @@ export default function VendorDashboard() {
                 )}
               </div>
 
-              {/* Step 4 — Image Upload from Device / Camera (Optional) */}
-              <div className="md:col-span-2 space-y-2 border-2 border-primary/20 p-4 rounded-xl bg-primary/5">
-                <Label className="text-sm font-bold text-foreground flex items-center justify-between">
-                  <span>📸 Photo Upload from Device <span className="text-xs font-normal text-muted-foreground">(Optional)</span></span>
-                  <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full">Device Storage / Camera</span>
-                </Label>
-                <div className="border-2 border-dashed border-primary/30 rounded-xl p-4 text-center cursor-pointer hover:bg-primary/10 transition-colors">
+              {/* Step 4 — Image Upload Choice: Device File Picker / Camera OR Web Image URL */}
+              <div className="md:col-span-2 space-y-3 border-2 border-primary/30 p-4 rounded-xl bg-primary/5">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-bold text-foreground flex items-center gap-2">
+                    <span>🖼️ Product Photo (Choose Option)</span>
+                    <span className="text-xs font-normal text-muted-foreground">(Optional)</span>
+                  </Label>
+                  <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full border border-emerald-200">
+                    Dual Mode: Device / URL
+                  </span>
+                </div>
+
+                {/* Mode Selector Tabs */}
+                <div className="flex bg-background border p-1 rounded-lg gap-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const radio = document.getElementById("mode-device") as HTMLInputElement;
+                      if (radio) radio.checked = true;
+                    }}
+                    className="flex-1 py-1.5 text-xs font-bold text-slate-700 hover:text-primary transition-colors flex items-center justify-center gap-1.5"
+                  >
+                    <input type="radio" id="mode-device" name="imgMode" defaultChecked className="accent-primary" />
+                    📱 Option A: Upload from Device / Camera
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const radio = document.getElementById("mode-url") as HTMLInputElement;
+                      if (radio) radio.checked = true;
+                    }}
+                    className="flex-1 py-1.5 text-xs font-bold text-slate-700 hover:text-primary transition-colors flex items-center justify-center gap-1.5"
+                  >
+                    <input type="radio" id="mode-url" name="imgMode" className="accent-primary" />
+                    🌐 Option B: Enter Web Image URL
+                  </button>
+                </div>
+
+                {/* Option A: Device File / Camera Picker */}
+                <div className="border-2 border-dashed border-primary/30 rounded-xl p-4 text-center hover:bg-primary/10 transition-colors">
                   <label className="cursor-pointer flex flex-col items-center justify-center">
                     <ImageIcon className="w-8 h-8 text-primary mb-1" />
-                    <span className="text-xs font-bold text-foreground">Click to Upload Photo from Device or Camera</span>
-                    <span className="text-[10px] text-muted-foreground mt-0.5">Supports PNG, JPG, WEBP, GIF, HEIC & camera capture</span>
+                    <span className="text-xs font-bold text-foreground">Click to Select Image from Device / Snap Camera Photo</span>
+                    <span className="text-[10px] text-muted-foreground mt-0.5">Device Storage (Gallery/Files) or Direct Camera (PNG, JPG, WEBP, GIF, HEIC)</span>
+                    <span className="mt-2 bg-primary text-primary-foreground text-xs font-bold px-4 py-1.5 rounded-lg shadow-sm">
+                      📁 Browse Device Files
+                    </span>
                     <input
                       type="file"
-                      accept="image/*"
+                      accept="image/*,image/jpeg,image/png,image/webp,image/gif,image/heic"
                       capture="environment"
                       className="hidden"
                       onChange={(e) => {
@@ -771,7 +807,7 @@ export default function VendorDashboard() {
                           reader.onload = (evt) => {
                             const result = evt.target?.result as string;
                             form.setValue("imageUrl", result);
-                            toast.success("Device photo attached!");
+                            toast.success("Device photo uploaded!");
                           };
                           reader.readAsDataURL(file);
                         }
@@ -779,27 +815,33 @@ export default function VendorDashboard() {
                     />
                   </label>
                 </div>
-                {form.watch("imageUrl") && (
-                  <div className="relative w-full h-36 rounded-lg border overflow-hidden bg-background">
-                    <img src={form.watch("imageUrl")} alt="Preview" className="w-full h-full object-contain" />
-                    <button
-                      type="button"
-                      onClick={() => form.setValue("imageUrl", "")}
-                      className="absolute top-2 right-2 bg-destructive text-white text-xs px-2 py-1 rounded-md"
-                    >
-                      Remove Photo
-                    </button>
-                  </div>
-                )}
-                <div className="pt-2">
-                  <Label className="text-[11px] text-muted-foreground block mb-1">Or Paste Image URL (Optional):</Label>
+
+                {/* Option B: Direct URL Input */}
+                <div className="pt-2 border-t border-slate-200/80">
+                  <Label className="text-xs font-semibold text-slate-600 block mb-1">
+                    Or Enter Direct Web Image URL:
+                  </Label>
                   <Input
                     placeholder="https://images.unsplash.com/photo-..."
                     value={form.watch("imageUrl") || ""}
                     onChange={(e) => form.setValue("imageUrl", e.target.value)}
-                    className="text-xs"
+                    className="text-xs bg-white"
                   />
                 </div>
+
+                {/* Image Live Preview Box */}
+                {form.watch("imageUrl") && (
+                  <div className="relative w-full h-40 rounded-xl border border-primary/30 overflow-hidden bg-background shadow-inner">
+                    <img src={form.watch("imageUrl")} alt="Product Preview" className="w-full h-full object-contain" />
+                    <button
+                      type="button"
+                      onClick={() => form.setValue("imageUrl", "")}
+                      className="absolute top-2 right-2 bg-destructive hover:bg-destructive/90 text-white text-xs font-bold px-2.5 py-1 rounded-md shadow"
+                    >
+                      ✕ Remove Image
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Step 4 — PDF Document Uploads */}
