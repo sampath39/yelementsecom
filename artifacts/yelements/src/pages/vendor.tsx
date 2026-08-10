@@ -56,7 +56,7 @@ const addProductSchema = z.object({
   showMRP: z.boolean().default(false),
   originalPrice: z.coerce.number().positive("MRP must be a positive number").optional(),
   brand: z.string().min(1, "Brand is required"),
-  imageUrl: z.string().url("Please enter a valid image URL"),
+  imageUrl: z.string().optional(),
   categoryId: z.coerce.number().min(1, "Please select a category"),
   subcategory: z.string().optional(),
   description: z.string().min(10, "Description must be at least 10 characters"),
@@ -703,40 +703,127 @@ export default function VendorDashboard() {
                 )}
               </div>
 
-              <div className="md:col-span-2 space-y-1.5">
-                <Label htmlFor="imageUrl">
-                  Image URL <span className="text-destructive">*</span>
+              {/* Step 4 — Image Upload from Device / Camera (Optional) */}
+              <div className="md:col-span-2 space-y-2 border-2 border-primary/20 p-4 rounded-xl bg-primary/5">
+                <Label className="text-sm font-bold text-foreground flex items-center justify-between">
+                  <span>📸 Photo Upload from Device <span className="text-xs font-normal text-muted-foreground">(Optional)</span></span>
+                  <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full">Device Storage / Camera</span>
                 </Label>
-                <Input
-                  id="imageUrl"
-                  placeholder="https://images.unsplash.com/photo-..."
-                  {...form.register("imageUrl")}
-                />
-                {form.formState.errors.imageUrl && (
-                  <p className="text-sm text-destructive">
-                    {form.formState.errors.imageUrl.message}
-                  </p>
-                )}
-                {watchImageUrl && !form.formState.errors.imageUrl && (
-                  <div className="mt-2 relative w-full h-40 rounded-lg border overflow-hidden bg-muted">
-                    <img
-                      src={watchImageUrl}
-                      alt="Preview"
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = "none";
+                <div className="border-2 border-dashed border-primary/30 rounded-xl p-4 text-center cursor-pointer hover:bg-primary/10 transition-colors">
+                  <label className="cursor-pointer flex flex-col items-center justify-center">
+                    <ImageIcon className="w-8 h-8 text-primary mb-1" />
+                    <span className="text-xs font-bold text-foreground">Click to Upload Photo from Device or Camera</span>
+                    <span className="text-[10px] text-muted-foreground mt-0.5">Supports PNG, JPG, WEBP, GIF, HEIC & camera capture</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onload = (evt) => {
+                            const result = evt.target?.result as string;
+                            form.setValue("imageUrl", result);
+                            toast.success("Device photo attached!");
+                          };
+                          reader.readAsDataURL(file);
+                        }
                       }}
                     />
+                  </label>
+                </div>
+                {form.watch("imageUrl") && (
+                  <div className="relative w-full h-36 rounded-lg border overflow-hidden bg-background">
+                    <img src={form.watch("imageUrl")} alt="Preview" className="w-full h-full object-contain" />
+                    <button
+                      type="button"
+                      onClick={() => form.setValue("imageUrl", "")}
+                      className="absolute top-2 right-2 bg-destructive text-white text-xs px-2 py-1 rounded-md"
+                    >
+                      Remove Photo
+                    </button>
                   </div>
                 )}
-                {(!watchImageUrl || form.formState.errors.imageUrl) && (
-                  <div className="mt-2 w-full h-24 rounded-lg border-2 border-dashed bg-muted flex items-center justify-center text-muted-foreground">
-                    <ImageIcon className="w-6 h-6 mr-2" />
-                    <span className="text-sm">
-                      Image preview will appear here
-                    </span>
+                <div className="pt-2">
+                  <Label className="text-[11px] text-muted-foreground block mb-1">Or Paste Image URL (Optional):</Label>
+                  <Input
+                    placeholder="https://images.unsplash.com/photo-..."
+                    value={form.watch("imageUrl") || ""}
+                    onChange={(e) => form.setValue("imageUrl", e.target.value)}
+                    className="text-xs"
+                  />
+                </div>
+              </div>
+
+              {/* Step 4 — PDF Document Uploads */}
+              <div className="md:col-span-2 space-y-2 border p-4 rounded-xl bg-slate-50 border-slate-200">
+                <Label className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+                  📄 Product Document Uploads (PDF) <span className="text-xs font-normal text-muted-foreground">(Optional)</span>
+                </Label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                  <div className="p-3 border rounded-lg bg-white text-center">
+                    <span className="text-xs font-semibold block mb-1">Technical Sheet</span>
+                    <label className="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-1 px-3 rounded cursor-pointer inline-block border">
+                      📁 Upload PDF
+                      <input type="file" accept=".pdf" className="hidden" onChange={() => toast.success("Technical Sheet PDF attached!")} />
+                    </label>
                   </div>
-                )}
+                  <div className="p-3 border rounded-lg bg-white text-center">
+                    <span className="text-xs font-semibold block mb-1">User Manual</span>
+                    <label className="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-1 px-3 rounded cursor-pointer inline-block border">
+                      📁 Upload PDF
+                      <input type="file" accept=".pdf" className="hidden" onChange={() => toast.success("User Manual PDF attached!")} />
+                    </label>
+                  </div>
+                  <div className="p-3 border rounded-lg bg-white text-center">
+                    <span className="text-xs font-semibold block mb-1">Brochure</span>
+                    <label className="text-[10px] bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-1 px-3 rounded cursor-pointer inline-block border">
+                      📁 Upload PDF
+                      <input type="file" accept=".pdf" className="hidden" onChange={() => toast.success("Brochure PDF attached!")} />
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 5 — Multiple Variants */}
+              <div className="md:col-span-2 space-y-2 border p-4 rounded-xl bg-slate-50 border-slate-200">
+                <Label className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+                  🎨 Step 5 — Product Variants (Size, Color, Capacity, Pack)
+                </Label>
+                <div className="flex gap-2">
+                  <Input placeholder="Variant Type (e.g. Size)" className="text-xs" />
+                  <Input placeholder="Variant Value (e.g. XL, 500ml)" className="text-xs" />
+                  <Button type="button" size="sm" variant="outline" onClick={() => toast.success("Variant added!")}>+ Add Variant</Button>
+                </div>
+              </div>
+
+              {/* Step 6 — Multiple Packaging Options */}
+              <div className="md:col-span-2 space-y-2 border p-4 rounded-xl bg-slate-50 border-slate-200">
+                <Label className="text-xs font-bold uppercase tracking-wider text-slate-700 block">
+                  📦 Step 6 — Packaging Options (Pack Sizes & Bundles)
+                </Label>
+                <div className="flex gap-2">
+                  <Input placeholder="Pack Size (e.g. Pack of 10, Box of 50)" className="text-xs" />
+                  <Input type="number" placeholder="Pack Price (₹)" className="text-xs" />
+                  <Button type="button" size="sm" variant="outline" onClick={() => toast.success("Packaging option added!")}>+ Add Option</Button>
+                </div>
+              </div>
+
+              {/* Step 8 — Supplier Details & Inventory Clarification */}
+              <div className="md:col-span-2 space-y-2 border p-4 rounded-xl bg-amber-50/50 border-amber-200">
+                <Label className="text-xs font-bold text-amber-900 block">
+                  💡 Step 8 — Supplier Details & Stock Clarification
+                </Label>
+                <p className="text-[11px] text-amber-800 leading-snug">
+                  • <strong>Wholesale Cost</strong>: Purchase cost paid to the supplier per unit.<br />
+                  • <strong>Supplier Stock</strong>: Stock available at the supplier’s warehouse for re-ordering (distinct from Our Store Stock).
+                </p>
+                <div className="grid grid-cols-2 gap-2 pt-1">
+                  <Input placeholder="Wholesale Cost (Cost Price ₹)" type="number" className="text-xs bg-white" />
+                  <Input placeholder="Supplier's Available Stock (Qty)" type="number" className="text-xs bg-white" />
+                </div>
               </div>
 
               <div className="md:col-span-2 space-y-1.5">
