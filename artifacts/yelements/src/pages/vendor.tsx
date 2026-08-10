@@ -330,64 +330,109 @@ export default function VendorDashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Vendor's Products */}
+          {/* Vendor's Products with Live Edit & Stock Sync */}
           <Card className="border-border shadow-sm">
             <CardHeader className="pb-4 border-b flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Your Products</CardTitle>
-                <CardDescription>Manage your inventory</CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  <Package className="w-5 h-5 text-primary" /> Your Inventory ({stats?.products?.length || 0})
+                </CardTitle>
+                <CardDescription>Live stock sync, product offers & easy editing</CardDescription>
               </div>
-              <Button variant="outline" size="sm" asChild>
-                <Link href="/products">View Live</Link>
-              </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={() => {
+                  queryClient.invalidateQueries({ queryKey: getGetVendorStatsQueryKey(user?.id ?? 0) });
+                  toast.success("Live inventory synchronized!");
+                }}>
+                  🔄 Sync Stock
+                </Button>
+                <Button variant="outline" size="sm" asChild>
+                  <Link href="/products">View Live Store</Link>
+                </Button>
+              </div>
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y divide-border max-h-[500px] overflow-y-auto">
                 {isLoading ? (
                   <div className="p-6 text-center text-muted-foreground">
-                    Loading products...
+                    Loading live inventory...
                   </div>
                 ) : stats?.products && stats.products.length > 0 ? (
                   stats.products.map((product) => (
                     <div
                       key={product.id}
-                      className="p-4 flex items-center gap-4 hover:bg-muted/30 transition-colors"
+                      className="p-4 flex items-center justify-between gap-4 hover:bg-muted/30 transition-colors"
                     >
-                      <div className="w-14 h-14 rounded bg-muted overflow-hidden shrink-0 border">
-                        {product.imageUrl ? (
-                          <img
-                            src={product.imageUrl}
-                            alt={product.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <Package className="w-6 h-6 text-muted-foreground/50 m-auto mt-4" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <Link
-                          href={`/products/${product.id}`}
-                          className="font-medium text-sm hover:text-primary transition-colors line-clamp-1"
-                        >
-                          {product.name}
-                        </Link>
-                        <div className="flex items-center gap-3 mt-1">
-                          <span className="text-xs font-semibold text-foreground">
-                            {formatPrice(product.price)}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            Stock:{" "}
-                            <span
-                              className={
-                                product.stock < 10
-                                  ? "text-destructive font-medium"
-                                  : "text-primary"
-                              }
-                            >
-                              {product.stock}
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <div className="w-14 h-14 rounded bg-muted overflow-hidden shrink-0 border relative">
+                          {product.imageUrl ? (
+                            <img
+                              src={product.imageUrl}
+                              alt={product.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <Package className="w-6 h-6 text-muted-foreground/50 m-auto mt-4" />
+                          )}
+                          {product.originalPrice && product.originalPrice > product.price && (
+                            <span className="absolute top-0 right-0 bg-red-600 text-white text-[9px] font-extrabold px-1 rounded-bl">
+                              OFFER
                             </span>
-                          </span>
+                          )}
                         </div>
+                        <div className="flex-1 min-w-0">
+                          <Link
+                            href={`/products/${product.id}`}
+                            className="font-medium text-sm hover:text-primary transition-colors line-clamp-1"
+                          >
+                            {product.name}
+                          </Link>
+                          <div className="flex flex-wrap items-center gap-2.5 mt-1">
+                            <span className="text-xs font-bold text-foreground">
+                              {formatPrice(product.price)}
+                            </span>
+                            {product.originalPrice && product.originalPrice > product.price && (
+                              <span className="text-[11px] text-muted-foreground line-through">
+                                {formatPrice(product.originalPrice)}
+                              </span>
+                            )}
+                            <span className="text-xs text-muted-foreground">
+                              Live Stock:{" "}
+                              <span
+                                className={
+                                  product.stock < 10
+                                    ? "text-destructive font-bold animate-pulse"
+                                    : "text-emerald-600 font-bold"
+                                }
+                              >
+                                {product.stock} units
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 text-xs border-primary/20 hover:bg-primary/5"
+                          onClick={() => {
+                            form.setValue("name", product.name);
+                            form.setValue("price", product.price);
+                            form.setValue("brand", product.brand || "Vendor Brand");
+                            form.setValue("stock", product.stock);
+                            form.setValue("imageUrl", product.imageUrl || "");
+                            form.setValue("description", product.description || "");
+                            if (product.originalPrice) {
+                              form.setValue("showMRP", true);
+                              form.setValue("originalPrice", product.originalPrice);
+                            }
+                            setShowAddProduct(true);
+                            toast.info(`Editing "${product.name}"`);
+                          }}
+                        >
+                          ✏️ Edit / Offer
+                        </Button>
                       </div>
                     </div>
                   ))
