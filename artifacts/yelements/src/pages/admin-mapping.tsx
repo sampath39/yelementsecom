@@ -289,13 +289,13 @@ export default function CatalogMappingWorkspace() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(45,212,191,0.15),transparent_60%)]" />
         <div className="container mx-auto max-w-6xl relative z-10 text-center space-y-4">
           <span className="px-3.5 py-1.5 rounded-full text-xs font-bold bg-teal-500/10 text-teal-300 border border-teal-500/20 uppercase tracking-widest">
-            Institutional Master Catalog
+            Vendor & Partner Institutional Catalog Portal
           </span>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight">
-            Catalog <span className="text-teal-400">Mapping Workspace</span>
+            Vendor Catalog <span className="text-teal-400">Mapping Workspace</span>
           </h1>
           <p className="text-slate-400 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
-            Create Product Masters, assign attributes, taxonomy mapping, pack sizes, variants, multi-supplier prices, and connect WMS/ERP telemetry.
+            Full 10-Step Vendor Product Mapping: Establish Product Masters, attributes, taxonomy, pack sizes, variants, multi-supplier stock prices, and ERP synchronization.
           </p>
         </div>
       </div>
