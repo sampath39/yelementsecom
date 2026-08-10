@@ -176,15 +176,99 @@ export default function VendorDashboard() {
     },
   });
 
+  const [editingProductId, setEditingProductId] = useState<number | null>(null);
+
   const watchImageUrl = form.watch("imageUrl");
 
   const openDialog = () => {
-    form.reset();
+    setEditingProductId(null);
+    form.reset({
+      name: "",
+      price: 0,
+      showMRP: false,
+      originalPrice: undefined,
+      brand: "",
+      imageUrl: "",
+      categoryId: 0,
+      subcategory: "",
+      description: "",
+      stock: 0,
+    });
     setShowAddProduct(true);
   };
 
-  const onSubmit = (values: AddProductValues) => {
+  const handleDeleteProduct = async (productId: number, productName: string) => {
+    if (!confirm(`Are you sure you want to permanently delete "${productName}" from your inventory?`)) return;
+
+    const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
+    const apiUrl = import.meta.env.VITE_API_URL || "";
+
+    try {
+      const res = await fetch(`${apiUrl}/api/products/${productId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to delete product");
+      }
+
+      toast.success("Product deleted successfully");
+      queryClient.invalidateQueries({ queryKey: getGetVendorStatsQueryKey(user?.id ?? 0) });
+      queryClient.invalidateQueries({ queryKey: getGetProductsQueryKey() });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    } catch (err: any) {
+      toast.error("Failed to delete product", { description: err.message });
+    }
+  };
+
+  const onSubmit = async (values: AddProductValues) => {
+    const token = localStorage.getItem("yelements_token") || localStorage.getItem("token") || "";
+    const apiUrl = import.meta.env.VITE_API_URL || "";
     const fullDescription = `Brand: ${values.brand}. ${values.description}`;
+
+    if (editingProductId) {
+      // Edit / Update existing product
+      try {
+        const res = await fetch(`${apiUrl}/api/products/${editingProductId}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name: values.name,
+            price: values.price,
+            originalPrice: values.showMRP ? values.originalPrice : null,
+            description: fullDescription,
+            categoryId: values.categoryId > 0 ? values.categoryId : undefined,
+            subcategory: values.subcategory || undefined,
+            imageUrl: values.imageUrl,
+            images: values.imageUrl ? [values.imageUrl] : [],
+            stock: values.stock,
+          }),
+        });
+
+        if (!res.ok) throw new Error("Failed to update product");
+
+        toast.success("Product updated successfully!", {
+          description: `"${values.name}" changes are live.`,
+        });
+        queryClient.invalidateQueries({ queryKey: getGetVendorStatsQueryKey(user?.id ?? 0) });
+        queryClient.invalidateQueries({ queryKey: getGetProductsQueryKey() });
+        queryClient.invalidateQueries({ queryKey: ["products"] });
+        setShowAddProduct(false);
+        setEditingProductId(null);
+        form.reset();
+      } catch (err: any) {
+        toast.error("Failed to update product", { description: err.message });
+      }
+      return;
+    }
+
+    // Create new product
     createProductMutation.mutate(
       {
         data: {
@@ -195,7 +279,7 @@ export default function VendorDashboard() {
           categoryId: values.categoryId,
           subcategory: values.subcategory || undefined,
           imageUrl: values.imageUrl,
-          images: [values.imageUrl],
+          images: values.imageUrl ? [values.imageUrl] : [],
           stock: values.stock,
         },
       },
@@ -417,12 +501,15 @@ export default function VendorDashboard() {
                           variant="outline"
                           className="h-8 text-xs border-primary/20 hover:bg-primary/5"
                           onClick={() => {
+                            setEditingProductId(product.id);
                             form.setValue("name", product.name);
                             form.setValue("price", product.price);
                             form.setValue("brand", product.brand || "Vendor Brand");
                             form.setValue("stock", product.stock);
                             form.setValue("imageUrl", product.imageUrl || "");
                             form.setValue("description", product.description || "");
+                            if (product.categoryId) form.setValue("categoryId", product.categoryId);
+                            if (product.subcategory) form.setValue("subcategory", product.subcategory);
                             if (product.originalPrice) {
                               form.setValue("showMRP", true);
                               form.setValue("originalPrice", product.originalPrice);
@@ -432,6 +519,15 @@ export default function VendorDashboard() {
                           }}
                         >
                           ✏️ Edit / Offer
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => handleDeleteProduct(product.id, product.name)}
+                          title="Delete product"
+                        >
+                          🗑️
                         </Button>
                       </div>
                     </div>
@@ -539,7 +635,7 @@ export default function VendorDashboard() {
           <DialogHeader>
             <DialogTitle className="text-xl font-bold flex items-center gap-2">
               <Plus className="w-5 h-5 text-primary" />
-              Add New Product
+              {editingProductId ? "Edit Product / Offer Details" : "Add New Product"}
             </DialogTitle>
           </DialogHeader>
 
